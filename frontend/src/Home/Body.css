@@ -1,0 +1,35 @@
+/* Prevent scrolling */
+html, body {
+    height: 100%;        /* Full height */
+    margin: 0;
+    padding: 0;
+}
+
+/* Body background */
+body {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;  /* Ensure full viewport height */
+    padding-top: 100px;  /* Add padding to compensate for navbar height */
+}
+
+/* Navbar styling */
+.nav {
+    background-color: white;
+    position: fixed; /* Make navbar fixed at the top */
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px; /* Adjust based on navbar height */
+    z-index: 1; /* Ensure navbar stays above other content */
+}
+
+/* Ensure navbar elements don't get hidden behind the background */
+.nav .site_image,
+.nav .site_name,
+.nav .number,
+.nav .entry {
+    z-index: 2;
+}
+

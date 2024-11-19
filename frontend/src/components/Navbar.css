@@ -1,0 +1,171 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.nav {
+    position: fixed; /* Keeps the navbar at the top */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full-width navbar */
+    background-color: white; /* Ensure visibility */
+    z-index: 1000; /* Ensure it appears above other elements */
+    display: flex; /* Flex for alignment */
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for better UI */
+}
+
+
+/* Logo or site image */
+.nav .site_image {
+    height: 60px; /* Reduced image height */
+    width: auto; 
+    margin-left: 70px;/* Automatically adjust width to maintain aspect ratio */
+}
+
+.nav .img {
+    height: 100%; /* Makes the image fit within the container */
+    object-fit: contain; /* Ensures the image maintains its aspect ratio */
+}
+
+/* Site name */
+.nav .site_name {
+    font-size: 20px; /* Reduced font size */
+    font-weight: bold;
+    margin-left: -20px; /* Reduced margin */
+}
+
+.nav .site_name .name {
+    font-family: 'Roboto', sans-serif; /* Ensure this matches the Google Fonts import */
+    /*font-optical-sizing: auto;*/
+    font-weight: 900; /* Adjust weight to match your desired style */
+    font-style: normal;
+    font-size: 46px;
+    color: darkred;
+}
+
+.nav .site_name .para {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 15px;
+    margin-top: -7px;
+}
+/* Contact number section */
+.nav .number {
+    display: flex;
+    align-items: center;
+    gap: 220px; /* Reduced gap */
+}
+
+.number .phone {
+    height: 50px; /* Increased height */
+    width: auto; /* Automatically adjusts width based on content */
+    font-size: 34px; /* Increased font size */
+    background-color: orange;
+    border-radius: 6px; /* Slightly rounded corners */
+    padding: 8px 16px; /* Increased padding */
+    animation: colorChange 0.87s infinite alternate;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centers the content */
+    color: #f9f9f9;
+}
+
+
+/*.number .phone:hover {
+    background-color: darkred;
+}*/
+
+.number .para_p {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 18px; /* Reduced font size */
+    margin: 0;
+    margin-left: -200px;
+}
+
+/* Login and Signup button section */
+.nav .entry {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Reduced gap */
+    margin-right: 120px;
+}
+
+.entry .login_box,
+.entry .signup_box { /* Common styling for both buttons */
+    height: 35px; /* Reduced button height */
+    width: 80px; /* Reduced button width */
+    background-color: rgb(204,202,235);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Quicksand";
+    font-weight: 700;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.entry .signup_box {
+    background-color: rgb(217,217,217);
+}
+
+.entry .login_box:hover,
+.entry .signup_box:hover {
+    background-color: darkred; 
+    color: white; 
+}
+
+/* Language selector styling */
+.language_selector {
+    margin-left: 5px; /* Reduced margin */
+    margin-right: 0;
+}
+
+.language_dropdown {
+    height: 35px; /* Reduced height */
+    padding: 0.3rem; /* Reduced padding */
+    font-size: 0.9rem; /* Reduced font size */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    color: black;
+    background-color: white;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.language_dropdown:hover {
+    background-color: #f9f9f9;
+}
+
+/* Animation */
+@keyframes colorChange {
+    0% {
+        background-color: orange;
+    }
+    100% {
+        background-color: darkred;
+    }
+}
+
+.icons {
+    height: 40px; 
+    width: 40px;
+    background-color: blue;
+    border-radius: 50%;
+    border: 3px solid gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: height 0.3s ease, width 0.3s ease, transform 0.3s ease;
+}
+.icons :hover{
+    height: 60px;
+    width: 60px;
+}
