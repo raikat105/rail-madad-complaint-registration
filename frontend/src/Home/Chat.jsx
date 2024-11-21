@@ -43,7 +43,7 @@ function App() {
       let requestBody = {};
 
       if (chatMode === "PNR Status") {
-        url = "http://localhost:5000/pnr-status";
+        url = "http://localhost:4001/pnr-status";
         requestBody = { pnr: input };
         console.log(requestBody)
         const response = await fetch(url, {
@@ -63,7 +63,7 @@ function App() {
       } 
       
       else if (chatMode === "Live Train Running Status") {
-        url = "http://localhost:5000/train-status";
+        url = "http://localhost:4001/train-status";
         requestBody = { trainNumber: input };
         const response = await fetch(url, {
           method: "POST",
@@ -79,7 +79,7 @@ function App() {
       } 
       
       else if (chatMode === "AI Chatbot") {
-        url = "http://localhost:5000/chat";
+        url = "http://localhost:4001/chat";
         requestBody = { message: input };
         const response = await fetch(url, {
           method: "POST",

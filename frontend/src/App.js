@@ -25,17 +25,16 @@ function App() {
         <Route
           path="/"
           element={
-            // isAuthenticated === true ? (
-            //   <>
-            //     <Body />
-            //     <Chat />
-            //   </>
-            // ) : isAuthenticated === false ? (
-            //   <Navigate to={"/login"} />
-            // ) : (
-            //   <div>Loading...</div>
-            // )
-            <Body />
+            isAuthenticated === true ? (
+              <>
+                <Body />
+                <Chat />
+              </>
+            ) : isAuthenticated === false ? (
+              <Navigate to={"/login"} />
+            ) : (
+              <div>Loading...</div>
+            )
           }
         />
         <Route path="/login" element={<Login />} />
