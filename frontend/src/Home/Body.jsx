@@ -14,7 +14,6 @@ const Body = () => {
         width: "100%", // Full viewport width
       }}
     >
-      {/* <App /> */}
       <div className="flex justify-center items-center min-h-screen text-black">
         <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
           <h2 className="text-xl font-semibold text-red-600">
