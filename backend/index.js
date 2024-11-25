@@ -5,8 +5,9 @@ import fileUpload from "express-fileupload";
 import { v2 as cloudinary } from "cloudinary";
 import cookieParser from "cookie-parser";
 import userRoute from "./routes/user.route.js";
+import complaintRoute from "./routes/complaint.route.js";
 import http from "http";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
 import cors from "cors";
 const app = express();
@@ -19,40 +20,42 @@ const MONGO_URL = process.env.MONGO_URI;
 app.use(express.json());
 app.use(cookieParser());
 app.use(
-  cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  })
+	cors({
+		origin: process.env.FRONTEND_URL,
+		credentials: true,
+		methods: ["GET", "POST", "PUT", "DELETE"],
+	})
 );
 
 app.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: "/tmp/",
-  })
+	fileUpload({
+		useTempFiles: true,
+		tempFileDir: "/tmp/",
+	})
 );
 
 // DB Code
 try {
-  mongoose.connect(MONGO_URL);
-  console.log("Conntected to MonogDB");
+	mongoose.connect(MONGO_URL);
+	console.log("Conntected to MongoDB");
 } catch (error) {
-  console.log(error);
+	console.log(error);
 }
 
 // defining routes
 app.use("/api/users", userRoute);
+app.use("/api/complaint", complaintRoute);
+app.use(fileUpload({ useTempFiles: true }));
 
 // Cloudinary
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_SECRET_KEY,
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.CLOUD_API_KEY,
+	api_secret: process.env.CLOUD_SECRET_KEY,
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+	console.log(`Server is running on port ${port}`);
 });
 
 app.post("/pnr-status", (req, res) => {
@@ -112,7 +115,7 @@ app.post("/pnr-status", (req, res) => {
 
 app.post("/train-status", (req, res) => {
 	const { trainNumber } = req.body;
-  console.log(trainNumber)
+	console.log(trainNumber);
 	if (!trainNumber || trainNumber.length !== 5) {
 		return res
 			.status(400)
@@ -173,19 +176,23 @@ app.post("/train-status", (req, res) => {
 });
 
 app.post("/chat", (req, res) => {
-	const yes = async () => {
-		const genAI = new GoogleGenerativeAI(process.env.API_KEY);
-		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-		const prompt =
-			"You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. Their next command is : " +
-			req.body.message +
-			"  \nAnswer Accordingly, just like a station helpline would do. Keep it kind of short. if the person asks for PNR, tell him to use IRCTC's website or RailMadad's PNR Status enquiry part. If he asks for Live Train Running Status, do the same again. Read IRCTC docs and give general enquiry details in brief as per the question.";
-
-		const result = await model.generateContent(prompt);
-		console.log(result.response.text());
-
-		res.json({ text: result.response.text() });
-	};
-	yes();
+	const openai = new OpenAI({ apiKey: process.env.API_KEY });
+	const prompt =
+		"You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. Their next command is : " +
+		req.body.message +
+		"  \nAnswer Accordingly, just like a station helpline would do. Keep it kind of short. if the person asks for PNR, tell him to use IRCTC's website or RailMadad's PNR Status enquiry part. If he asks for Live Train Running Status, do the same again. Read IRCTC docs and give general enquiry details in brief as per the question.";
+	async function main() {
+		const response = await openai.chat.completions.create({
+			model: "gpt-4o-mini",
+			messages: [
+				{
+					role: "user",
+					content: [{ type: "text", text: prompt }],
+				},
+			],
+		});
+		console.log(response.choices[0]);
+		res.json({text : response.choices[0].message.content})
+	}
+	main();
 });
