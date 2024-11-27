@@ -152,3 +152,14 @@ export const deleteComplaint = async (req, res) => {
 		res.status(500).json({ error: "Failed to delete complaint" });
 	}
 };
+
+export const getDeptComplaints = async (req, res) => {
+	try {
+		const { dept } = req.params;
+	  const complaints = await Complaint.find({ department: dept });
+	  res.status(200).json({ complaints });
+	} catch (error) {
+	  console.error(error);
+	  res.status(500).json({ error: "Failed to fetch complaints" });
+	}
+  };

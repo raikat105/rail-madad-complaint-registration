@@ -36,7 +36,7 @@ export const verifyComplaintOwnership = (req, res, next) => {
 
 // Middleware to check complaint type validity
 export const validateComplaintType = (req, res, next) => {
-  const validTypes = ['General', 'Technical', 'Safety', 'Service'];
+  const validTypes = ['Enquiry', 'Technical', 'Safety', 'Service'];
   const { complaintType } = req.body;
 
   if (complaintType && !validTypes.includes(complaintType)) {

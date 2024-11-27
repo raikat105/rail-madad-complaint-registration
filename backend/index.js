@@ -6,18 +6,25 @@ import { v2 as cloudinary } from "cloudinary";
 import cookieParser from "cookie-parser";
 import userRoute from "./routes/user.route.js";
 import complaintRoute from "./routes/complaint.route.js";
-import http from "http";
+import https from "https";
 import OpenAI from "openai";
+import multer from "multer";
+import bodyParser from "body-parser";
+import fs from "fs";
+
+const upload = multer();
 
 import cors from "cors";
 const app = express();
 dotenv.config();
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const port = process.env.PORT;
 const MONGO_URL = process.env.MONGO_URI;
 
 //middleware
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(
 	cors({
@@ -60,56 +67,72 @@ app.listen(port, () => {
 
 app.post("/pnr-status", (req, res) => {
 	const { pnr } = req.body;
-	console.log(pnr);
-	if (!pnr || pnr.length !== 10) {
+
+	// Validate PNR number
+	if (!pnr || pnr.length !== 10 || isNaN(pnr)) {
 		return res
 			.status(400)
 			.json({ status: "error", message: "Invalid PNR number." });
 	}
-	console.log(pnr);
+
+	// Options for HTTPS request
 	const options = {
 		method: "GET",
 		hostname: "irctc-indian-railway-pnr-status.p.rapidapi.com",
-		port: null,
 		path: `/getPNRStatus/${pnr}`,
 		headers: {
-			"x-rapidapi-key": "14497601b1mshd129f732e915c72p104366jsn916ae8ff0c31", // Replace with your RapidAPI key
+			"x-rapidapi-key": process.env.RAPIDAPI_KEY, // Use environment variable for the API key
 			"x-rapidapi-host": "irctc-indian-railway-pnr-status.p.rapidapi.com",
 		},
 	};
 
-	const apiReq = http.request(options, (apiRes) => {
-		const chunks = [];
+	// Make the API request
+	const apiReq = https.request(options, (apiRes) => {
+		let data = "";
 
+		// Collect data chunks
 		apiRes.on("data", (chunk) => {
-			chunks.push(chunk);
+			data += chunk;
 		});
 
+		// Process the complete response
 		apiRes.on("end", () => {
-			const body = Buffer.concat(chunks).toString();
-			console.log(body);
-			const parsedBody = JSON.parse(body);
+			try {
+				const parsedBody = JSON.parse(data);
 
-			if (parsedBody.error) {
-				return res
-					.status(500)
-					.json({ status: "error", message: "Unable to fetch PNR status." });
+				if (parsedBody.error) {
+					return res.status(500).json({
+						status: "error",
+						message: "Unable to fetch PNR status.",
+						errorDetails: parsedBody.error,
+					});
+				}
+				console.log(parsedBody);
+
+				res.json({
+					status: "success",
+					pnrDetails: parsedBody,
+				});
+			} catch (err) {
+				// Handle JSON parsing errors
+				console.error("Error parsing API response:", err.message);
+				return res.status(500).json({
+					status: "error",
+					message: "Failed to process PNR response.",
+				});
 			}
-
-			res.json({
-				status: "success",
-				pnrDetails: parsedBody,
-			});
 		});
 	});
 
+	// Handle request errors
 	apiReq.on("error", (err) => {
-		console.error(err);
+		console.error("Request error:", err.message);
 		res
 			.status(500)
 			.json({ status: "error", message: "Failed to connect to RapidAPI." });
 	});
 
+	// End the request
 	apiReq.end();
 });
 
@@ -139,7 +162,7 @@ app.post("/train-status", (req, res) => {
 		},
 	};
 
-	const apiReq = http.request(options, function (apiRes) {
+	const apiReq = https.request(options, function (apiRes) {
 		const chunks = [];
 
 		apiRes.on("data", function (chunk) {
@@ -175,24 +198,79 @@ app.post("/train-status", (req, res) => {
 	apiReq.end();
 });
 
-app.post("/chat", (req, res) => {
-	const openai = new OpenAI({ apiKey: process.env.API_KEY });
-	const prompt =
-		"You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. Their next command is : " +
-		req.body.message +
-		"  \nAnswer Accordingly, just like a station helpline would do. Keep it kind of short. if the person asks for PNR, tell him to use IRCTC's website or RailMadad's PNR Status enquiry part. If he asks for Live Train Running Status, do the same again. Read IRCTC docs and give general enquiry details in brief as per the question.";
-	async function main() {
-		const response = await openai.chat.completions.create({
-			model: "gpt-4o-mini",
-			messages: [
-				{
-					role: "user",
-					content: [{ type: "text", text: prompt }],
-				},
-			],
-		});
-		console.log(response.choices[0]);
-		res.json({text : response.choices[0].message.content})
+upload.none();
+
+app.post("/chat", async (req, res) => {
+	try {
+		// Log the incoming request body
+		console.log(req.body);
+
+		const { text, media, chatHistory } = req.body;
+
+		const openai = new OpenAI({ apiKey: process.env.API_KEY });
+		if (!process.env.API_KEY) {
+			throw new Error("API_KEY is missing. Check your environment variables.");
+		}
+
+		// Construct the prompt
+		const prompt =
+			"You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. The chat history of the user and your chatbot is :  \n" + chatHistory +
+			"And now their new query or line is :" +
+			text +
+			"  \nAnswer Accordingly, just like a station helpline would do. Keep it brief and simple. And your answer shouldnt start with Chatbot :. it should be normal ";
+
+		// Handle media
+		if (media) {
+			const base64Data = media.replace(/^data:image\/\w+;base64,/, "");
+			const buffer = Buffer.from(base64Data, "base64");
+
+			// Save the image (e.g., locally or to a cloud storage service)
+			const filePath = `C:/Users/RAIKAT/OneDrive/Documents/rail-madad-complaint-registration/backend/image_${Date.now()}.png`;
+			fs.writeFileSync(filePath, buffer);
+
+			prompt +=
+				"Here's a corresponding image given by the user. Please reply accordingly.";
+			const response = await openai.chat.completions.create({
+				model: "gpt-4o", // Use the correct model name
+				messages: [
+					{
+						role: "user",
+						content: [
+							{ type: "text", text: prompt },
+							{
+								type: "image_url",
+								image_url: {
+									url: filePath,
+								},
+							},
+						],
+					},
+				],
+			});
+
+			// Log and send the response
+			console.log(response.choices[0].message);
+			res.json({ text: response.choices[0].message.content });
+		} else {
+			const response = await openai.chat.completions.create({
+				model: "gpt-4o", // Use the correct model name
+				messages: [
+					{
+						role: "user",
+						content: prompt,
+					},
+				],
+			});
+
+			// Log and send the response
+			console.log(response.choices[0].message);
+			res.json({ text: response.choices[0].message.content });
+		}
+	} catch (error) {
+		// Log and send errors
+		console.error("Error occurred:", error.message);
+		res
+			.status(500)
+			.json({ error: "Internal Server Error", text: error });
 	}
-	main();
 });
