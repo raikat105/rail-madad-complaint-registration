@@ -2,9 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Dashboard.css";
 import img from "../Assets/Profile.jpg";
+import Navbar from "../components/Navbar";
 
 const Dashboard = () => {
   return (
+    <>
+    <Navbar />
     <div className="dashboard-container">
       <div className="sidebar">
         <div className="profile">
@@ -32,6 +35,7 @@ const Dashboard = () => {
         </nav>
       </div>
     </div>
+    </>
   );
 };
 

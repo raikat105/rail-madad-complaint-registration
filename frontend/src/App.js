@@ -10,6 +10,7 @@ import Body from "./Home/Body";
 import Dashboard from "./Home/Dashboard";
 import Contact from "./Home/Contact";
 import Chat from "./Home/Chat";
+import Form from "./Home/Form";
 
 function App() {
   const location = useLocation();
@@ -43,6 +44,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/complaints" element={<Form />} />
         <Route path="*" element={<div>Page Not Found</div>} />
       </Routes>
       <Toaster />
