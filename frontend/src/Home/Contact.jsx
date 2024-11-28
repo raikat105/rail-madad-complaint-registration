@@ -1,7 +1,7 @@
 import React from "react";
 import img from "../Assets/Train.jpg";
-import "../Components/Contact.css";
-import Footer from "./Footer.jsx";
+import "./Contact.css";
+// import Footer from "../components/Footer";
 const Contact = () => {
   return (
     <div className="contact">
@@ -22,7 +22,7 @@ const Contact = () => {
         </div>
       </div>
       <div className="finish">
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </div>
   );
