@@ -1,0 +1,88 @@
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: auto;
+}
+
+/* Main container */
+.contact {
+    display: flex;
+    flex-direction: row; /* Stack the content vertically */
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    gap: 20px; /* Small gap between the content and footer */
+    min-height: 100vh; /* Ensure enough space for all elements */
+}
+
+/* Both boxes container */
+.contact-contain, .img-contain {
+    flex: 1; /* Ensures both take equal width */
+    max-width: 900px; /* Limits max-width */
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Flexbox to make them side by side */
+.contact {
+    display: flex; /* Makes children (contact-contain and img-contain) side by side */
+    gap: 50px; /* Adjust the gap between the boxes */
+    flex-wrap: wrap; /* Ensures they wrap correctly on smaller screens */
+}
+
+/* Right section - Contact text */
+.contact-contain {
+    background-color: none;
+    border: 2px solid #1E90FF;
+    padding: 20px;
+    flex: 1; /* Makes the contact box take equal space */
+    height: 800px;
+    border-radius: 30px;
+    margin-top: 450px;
+    backdrop-filter: blur(5px);
+}
+
+.contact-contain .para {
+    font-weight: 900;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #1E90FF;
+}
+
+.contact-contain .identity {
+    font-size: 1.7rem;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.contact-contain .mail {
+    font-size: 1.7rem;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.contact-contain .mail:hover {
+    color: #0056b3;
+}
+
+/* Left section - Image */
+.img-contain {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1; /* Makes the image box take equal space */
+    margin-top: 510px;
+}
+
+.img-contain img {
+    max-width: 100%; /* Prevents overflow */
+    height: auto; /* Keeps aspect ratio */
+    object-fit: cover;
+    border-radius: 30px;
+}
