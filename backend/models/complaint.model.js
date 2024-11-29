@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const complaintSchema = new mongoose.Schema({
   userId: {
     type: String,
-    required: true,
+    required: false,
     ref: "User",
   },
   complaintId: {
@@ -23,7 +23,7 @@ const complaintSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    required: true,
+    required: false,
     trim: true,
   },
   description: {
@@ -42,12 +42,25 @@ const complaintSchema = new mongoose.Schema({
   complaintType: {
     type: String,
     required: true,
-    enum: ['General', 'Technical', 'Safety', 'Service'], // Example types, adjust as needed
+  },
+  complaintSubType: {
+    type: String,
+    required: true,
+  },
+  pnrNumber: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (v) {
+        return /^\d{10}$/.test(v); 
+      },
+      message: props => `${props.value} is not a valid PNR number!`,
+    },
   },
   department: {
     type: String,
-    required: true,
-    enum: ['IT', 'HR', 'Operations', 'Customer Support'], // Example departments, adjust as needed
+    required: false,
+    enum: ['Safety', 'Operations', 'Cleaning'], 
   },
   createdAt: {
     type: Date,

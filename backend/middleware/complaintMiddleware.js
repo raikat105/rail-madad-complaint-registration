@@ -34,18 +34,6 @@ export const verifyComplaintOwnership = (req, res, next) => {
   }
 };
 
-// Middleware to check complaint type validity
-export const validateComplaintType = (req, res, next) => {
-  const validTypes = ['Enquiry', 'Technical', 'Safety', 'Service'];
-  const { complaintType } = req.body;
-
-  if (complaintType && !validTypes.includes(complaintType)) {
-    return res.status(400).json({ message: `Invalid complaint type. Must be one of: ${validTypes.join(", ")}` });
-  }
-
-  next();
-};
-
 // Middleware to validate department
 export const validateDepartment = (req, res, next) => {
   const validDepartments = ['IT', 'HR', 'Operations', 'Customer Support'];

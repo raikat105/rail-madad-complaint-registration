@@ -12,7 +12,6 @@ import {
 import {
 	validateComplaintExists,
 	verifyComplaintOwnership,
-	validateComplaintType,
 	validateDepartment,
 } from "../middleware/complaintMiddleware.js";
 
@@ -21,10 +20,8 @@ import { isAuthenticated } from "../middleware/authUser.js";
 const router = express.Router();
 
 router.post(
-	"/",
-	isAuthenticated,
-	validateComplaintType,
-	validateDepartment,
+	"/create",
+	//isAuthenticated,
 	createComplaint
 );
 router.get("/history", isAuthenticated, getMyComplaints);
@@ -34,7 +31,6 @@ router.put(
 	isAuthenticated,
 	validateComplaintExists,
 	verifyComplaintOwnership,
-	validateComplaintType,
 	validateDepartment,
 	updateComplaint
 );

@@ -1,6 +1,5 @@
 import {Complaint} from "../models/complaint.model.js";
 import { v2 as cloudinary } from "cloudinary";
-
 // Utility function to validate required fields
 const validateFields = (fields, body) => {
 	for (const field of fields) {
@@ -12,14 +11,15 @@ const validateFields = (fields, body) => {
 // Create a new complaint
 export const createComplaint = async (req, res) => {
 	try {
+		const d = new Date()
+		console.log(req.body)
 		// Validate required fields
 		const requiredFields = [
-			"complaintId",
 			"phoneNumber",
-			"name",
+			"pnrNumber",
+			"complaintSubType",
 			"description",
 			"complaintType",
-			"department",
 		];
 		const missingField = validateFields(requiredFields, req.body);
 		if (missingField) {
@@ -27,14 +27,14 @@ export const createComplaint = async (req, res) => {
 		}
 
 		const {
-			complaintId,
+			pnrNumber,
 			phoneNumber,
-			name,
 			description,
 			complaintType,
-			department,
+			complaintSubType,
 		} = req.body;
-
+		
+		const complaintId = phoneNumber + d.getTime();
 		// Handle optional media upload
 		let mediaUrl = null;
 		let audioUrl = null;
@@ -59,15 +59,15 @@ export const createComplaint = async (req, res) => {
 
 		// Create a new complaint
 		const complaint = new Complaint({
-			userId: req.user._id, // Reference the logged-in user's ID
+			//userId: req.user._id, 
 			complaintId,
 			phoneNumber,
-			name,
+			pnrNumber,
 			description,
 			media: mediaUrl,
 			audio: audioUrl,
 			complaintType,
-			department,
+			complaintSubType,
 		});
 
 		await complaint.save();
