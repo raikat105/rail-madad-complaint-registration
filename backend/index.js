@@ -202,75 +202,50 @@ upload.none();
 
 app.post("/chat", async (req, res) => {
 	try {
-		// Log the incoming request body
-		console.log(req.body);
-
-		const { text, media, chatHistory } = req.body;
-
-		const openai = new OpenAI({ apiKey: process.env.API_KEY });
-		if (!process.env.API_KEY) {
-			throw new Error("API_KEY is missing. Check your environment variables.");
-		}
-
-		// Construct the prompt
-		const prompt =
-			"You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. The chat history of the user and your chatbot is :  \n" + chatHistory +
-			"And now their new query or line is :" +
-			text +
-			"  \nAnswer Accordingly, just like a station helpline would do. Keep it brief and simple. And your answer shouldnt start with Chatbot :. it should be normal ";
-
-		// Handle media
-		if (media) {
-			const base64Data = media.replace(/^data:image\/\w+;base64,/, "");
-			const buffer = Buffer.from(base64Data, "base64");
-
-			// Save the image (e.g., locally or to a cloud storage service)
-			const filePath = `C:/Users/RAIKAT/OneDrive/Documents/rail-madad-complaint-registration/backend/image_${Date.now()}.png`;
-			fs.writeFileSync(filePath, buffer);
-
-			prompt +=
-				"Here's a corresponding image given by the user. Please reply accordingly.";
-			const response = await openai.chat.completions.create({
-				model: "gpt-4o", // Use the correct model name
-				messages: [
-					{
-						role: "user",
-						content: [
-							{ type: "text", text: prompt },
-							{
-								type: "image_url",
-								image_url: {
-									url: filePath,
-								},
-							},
-						],
-					},
-				],
-			});
-
-			// Log and send the response
-			console.log(response.choices[0].message);
-			res.json({ text: response.choices[0].message.content });
-		} else {
-			const response = await openai.chat.completions.create({
-				model: "gpt-4o", // Use the correct model name
-				messages: [
-					{
-						role: "user",
-						content: prompt,
-					},
-				],
-			});
-
-			// Log and send the response
-			console.log(response.choices[0].message);
-			res.json({ text: response.choices[0].message.content });
-		}
+	  // Log the incoming request body
+	  console.log(req.body);
+  
+	  const { text, media, chatHistory } = req.body;
+  
+	  const openai = new OpenAI({ apiKey: process.env.API_KEY });
+	  if (!process.env.API_KEY) {
+		throw new Error("API_KEY is missing. Check your environment variables.");
+	  }
+  
+	  // Construct the prompt
+	  let prompt =
+		"You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. The chat history of the user and your chatbot is: \n" +
+		chatHistory +
+		"\nAnd now their new query or line is: " +
+		text +
+		"\nAnswer accordingly, just like a station helpline would do. Keep it brief and simple. And your answer shouldn't start with 'Chatbot:'. It should be normal.";
+  
+	  // Append media information to the prompt if media exists
+	  if (media) {
+		prompt +=
+		  "\nThe user has also provided an image or media file. Here's the URL: " +
+		  media +
+		  "\nUse this information to provide a more accurate response.";
+	  }
+  
+	  // Call OpenAI's API
+	  const response = await openai.chat.completions.create({
+		model: "gpt-4", // Use the correct model name
+		messages: [
+		  {
+			role: "user",
+			content: prompt,
+		  },
+		],
+	  });
+  
+	  // Log and send the response
+	  console.log(response.choices[0].message);
+	  res.json({ text: response.choices[0].message.content });
 	} catch (error) {
-		// Log and send errors
-		console.error("Error occurred:", error.message);
-		res
-			.status(500)
-			.json({ error: "Internal Server Error", text: error });
+	  // Log and send errors
+	  console.error("Error occurred:", error.message);
+	  res.status(500).json({ error: "Internal Server Error", text: error.message });
 	}
-});
+  });
+  

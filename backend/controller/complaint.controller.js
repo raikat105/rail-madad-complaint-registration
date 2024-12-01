@@ -32,30 +32,12 @@ export const createComplaint = async (req, res) => {
 			description,
 			complaintType,
 			complaintSubType,
+			imageURL,
+			audioURL,
+			videoURL,
 		} = req.body;
 		
 		const complaintId = phoneNumber + d.getTime();
-		// Handle optional media upload
-		let mediaUrl = null;
-		let audioUrl = null;
-
-		if (req.files) {
-			if (req.files.media) {
-				const mediaResponse = await cloudinary.uploader.upload(
-					req.files.media.tempFilePath
-				);
-				mediaUrl = mediaResponse.url;
-			}
-			if (req.files.audio) {
-				const audioResponse = await cloudinary.uploader.upload(
-					req.files.audio.tempFilePath,
-					{
-						resource_type: "video",
-					}
-				);
-				audioUrl = audioResponse.url;
-			}
-		}
 
 		// Create a new complaint
 		const complaint = new Complaint({
@@ -64,8 +46,9 @@ export const createComplaint = async (req, res) => {
 			phoneNumber,
 			pnrNumber,
 			description,
-			media: mediaUrl,
-			audio: audioUrl,
+			image: imageURL,
+			video: videoURL,
+			audio: audioURL,
 			complaintType,
 			complaintSubType,
 		});
