@@ -205,7 +205,7 @@ app.post("/chat", async (req, res) => {
 	  // Log the incoming request body
 	  console.log(req.body);
   
-	  const { text, media, chatHistory } = req.body;
+	  const { text, chatHistory } = req.body;
   
 	  const openai = new OpenAI({ apiKey: process.env.API_KEY });
 	  if (!process.env.API_KEY) {
@@ -213,20 +213,12 @@ app.post("/chat", async (req, res) => {
 	  }
   
 	  // Construct the prompt
-	  let prompt =
+	  const prompt =
 		"You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. The chat history of the user and your chatbot is: \n" +
 		chatHistory +
 		"\nAnd now their new query or line is: " +
 		text +
 		"\nAnswer accordingly, just like a station helpline would do. Keep it brief and simple. And your answer shouldn't start with 'Chatbot:'. It should be normal.";
-  
-	  // Append media information to the prompt if media exists
-	  if (media) {
-		prompt +=
-		  "\nThe user has also provided an image or media file. Here's the URL: " +
-		  media +
-		  "\nUse this information to provide a more accurate response.";
-	  }
   
 	  // Call OpenAI's API
 	  const response = await openai.chat.completions.create({
