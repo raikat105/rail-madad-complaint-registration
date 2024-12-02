@@ -83,13 +83,15 @@ const Form = () => {
 				uploadedFiles.videoUrl = await uploadToCloudinary(files.video, "video");
 			}
 
+			const completeComplaintData = { ...complaintData, ...uploadedFiles };
+			
 			try {
 				const response = await fetch("http://127.0.0.1:5000/upload", {
 				  method: "POST",
 				  headers: {
 					"Content-Type": "application/json",
 				  },
-				  body: JSON.stringify(uploadedFiles),
+				  body: JSON.stringify(completeComplaintData),
 				});
 			
 				if (response.ok) {
@@ -101,8 +103,6 @@ const Form = () => {
 			  } catch (error) {
 				console.error("Error sending data:", error);
 			  }
-
-			const completeComplaintData = { ...complaintData, ...uploadedFiles };
 
 			const response = await axios.post(
 				"http://localhost:4001/api/complaint/create",
