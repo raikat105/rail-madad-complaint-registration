@@ -5,14 +5,8 @@ import fileUpload from "express-fileupload";
 import { v2 as cloudinary } from "cloudinary";
 import cookieParser from "cookie-parser";
 import userRoute from "./routes/user.route.js";
-import complaintRoute from "./routes/complaint.route.js";
-import https from "https";
-import OpenAI from "openai";
-import multer from "multer";
-import bodyParser from "body-parser";
-import fs from "fs";
-
-const upload = multer();
+import http from "http";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 import cors from "cors";
 const app = express();
@@ -51,8 +45,6 @@ try {
 
 // defining routes
 app.use("/api/users", userRoute);
-app.use("/api/complaint", complaintRoute);
-app.use(fileUpload({ useTempFiles: true }));
 
 // Cloudinary
 cloudinary.config({
@@ -198,46 +190,20 @@ app.post("/train-status", (req, res) => {
 	apiReq.end();
 });
 
-upload.none();
+app.post("/chat", (req, res) => {
+	const yes = async () => {
+		const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-app.post("/chat", async (req, res) => {
-	try {
-	  // Log the incoming request body
-	  console.log(req.body);
-  
-	  const { text, chatHistory } = req.body;
-  
-	  const openai = new OpenAI({ apiKey: process.env.API_KEY });
-	  if (!process.env.API_KEY) {
-		throw new Error("API_KEY is missing. Check your environment variables.");
-	  }
-  
-	  // Construct the prompt
-	  const prompt =
-		"You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. The chat history of the user and your chatbot is: \n" +
-		chatHistory +
-		"\nAnd now their new query or line is: " +
-		text +
-		"\nAnswer accordingly, just like a station helpline would do. Keep it brief and simple. And your answer shouldn't start with 'Chatbot:'. It should be normal.";
-  
-	  // Call OpenAI's API
-	  const response = await openai.chat.completions.create({
-		model: "gpt-4", // Use the correct model name
-		messages: [
-		  {
-			role: "user",
-			content: prompt,
-		  },
-		],
-	  });
-  
-	  // Log and send the response
-	  console.log(response.choices[0].message);
-	  res.json({ text: response.choices[0].message.content });
-	} catch (error) {
-	  // Log and send errors
-	  console.error("Error occurred:", error.message);
-	  res.status(500).json({ error: "Internal Server Error", text: error.message });
-	}
-  });
-  
+		const prompt =
+			"You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. Their next command is : " +
+			req.body.message +
+			"  \nAnswer Accordingly, just like a station helpline would do. Keep it kind of short. if the person asks for PNR, tell him to use IRCTC's website or RailMadad's PNR Status enquiry part. If he asks for Live Train Running Status, do the same again. Read IRCTC docs and give general enquiry details in brief as per the question.";
+
+		const result = await model.generateContent(prompt);
+		console.log(result.response.text());
+
+		res.json({ text: result.response.text() });
+	};
+	yes();
+});
