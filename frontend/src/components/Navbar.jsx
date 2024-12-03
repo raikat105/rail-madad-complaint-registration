@@ -1,13 +1,35 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 import "./Navbar.css";
+import { useAuth } from "../context/AuthProvider";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
 
-  const handleLanguageChange = (event) => {
-    setSelectedLanguage(event.target.value);
-  };
+  const { profile, isAuthenticated, setIsAuthenticated } = useAuth();
+  console.log(profile?.user);
+  const navigateTo = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+        const { data } = await axios.get(
+            "http://localhost:4001/api/users/logout",
+            { withCredentials: true }
+        );
+        console.log(data);
+        toast.success(data.message);
+        setIsAuthenticated(false);
+        navigateTo("/login");
+    } catch (error) {
+        console.log(error);
+        toast.error("Failed to logout");
+    }
+};
+
+
 
   return (
     <header className="header">
@@ -33,7 +55,7 @@ const Navbar = () => {
               </div>
             </li>
             <li className="nav-item">
-              <Link to="/">Feed</Link>
+              <Link to="/feed">Feed</Link>
               <div className="dropdown-box">
                 <p>View the latest updates!</p>
               </div>
@@ -54,23 +76,47 @@ const Navbar = () => {
         </div>
       </nav>
       <div>
-        <ul className="nav-item"><button type="button" className="btn3">
-          {" "}
-          Login
-          </button>
-          <div className="dropdown-box">
-                <p>Already registered.</p>
-          </div></ul>
-      </div> 
-      <div>
-      <ul className="nav-item"><button type="button" className="btn2">
-          {" "}
-          Sign Up
-          </button>
-          <div className="dropdown-box">
-                <p>Create new account.</p>
-          </div></ul>
       </div>
+      
+
+
+      <div className="hidden md:flex space-x-2">
+                    {isAuthenticated && profile?.user?.role === "admin" ? (
+                        <Link
+                            to="/dashboard"
+                            className="bg-blue-600 text-white font-semibold hover:bg-blue-800 duration-300 px-4 py-2 rounded"
+                        >
+                            DASHBOARD
+                        </Link>
+                    ) : null}
+
+                    {!isAuthenticated ? (
+                        <>
+                            <Link
+                                to="/Login"
+                                className="bg-red-600 text-white font-semibold hover:bg-red-800 duration-300 px-4 py-2 rounded"
+                            >
+                                LOGIN
+                            </Link>
+                            <Link
+                                to="/signup"
+                                className="bg-green-600 text-white font-semibold hover:bg-green-800 duration-300 px-4 py-2 rounded"
+                            >
+                                SIGN UP
+                            </Link>
+                        </>
+                    ) : (
+                        <button
+                            onClick={handleLogout}
+                            className="bg-red-600 text-white font-semibold hover:bg-red-800 duration-300 px-4 py-2 rounded"
+                        >
+                            LOGOUT
+                        </button>
+                    )}
+                </div>
+
+
+      
     </header>
   );
 };

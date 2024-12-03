@@ -11,6 +11,7 @@ import Dashboard from "./Home/Dashboard";
 import Contact from "./Home/Contact";
 import Chat from "./Home/Chat";
 import Form from "./Home/Form";
+import Home from "./Home/Home";
 
 function App() {
   const location = useLocation();
@@ -31,7 +32,8 @@ function App() {
             isAuthenticated === true ? (
               <>
                 <Body />
-                <Chat />
+                <Home />
+                {/* <Chat /> */}
               </>
             ) : isAuthenticated === false ? (
               <Navigate to={"/login"} />
@@ -42,13 +44,14 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/complaints" element={<Form />} />
+        <Route path="/dashboard" element={<><Body /> <Dashboard /></>} />
+        <Route path="/contact" element={<><Body /> <Contact /></>} />
+        <Route path="/feed" element={<><Body /></>} />
+        <Route path="/complaints" element={<><Body /> <Form /></>} />
         <Route path="*" element={<div>Page Not Found</div>} />
       </Routes>
       <Toaster />
-      {!hideNavbarFooter && <Footer />}
+      {/* {!hideNavbarFooter && <Footer />} */}
     </div>
   );
 }

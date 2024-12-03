@@ -1,0 +1,139 @@
+
+.image-container{
+    position: relative;
+  }
+  
+  .image-text {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    block-size: 100%;
+    color: #fcfcfc;
+    font-family: Arial, sans-serif;
+    font-size: 0.9rem;
+    margin-inline-start: 10px;
+    /* text-shadow: 0 0 100px #080808; */
+    text-shadow:  -1px 0px 2px black;
+  }
+  .image-text:hover
+  {
+    font-size: 1rem;
+    line-height: 1.2;
+    color: #429bf4;
+    text-shadow: 1px 1px 2px black;
+    text-decoration: underline;
+  
+  }
+  .overlay-image5 {
+    position: absolute;
+    inset-block-start: 35%; /* Center vertically */
+    inset-inline-start: 34%; /* Center horizontally */
+    transform: translate(-50%, -50%) scale(1); /* Start with normal size */
+    inline-size: 60px; /* Adjust size as needed */
+    block-size: auto;
+    animation: scaleUp 2.2s ease-out forwards;
+    transition: transform 0.3s ease; /* Smooth transition on hover */
+  }
+  
+  .overlay-image4 {
+    position: absolute;
+    inset-block-start: 35%; /* Center vertically */
+    inset-inline-start: 44%; /* Center horizontally */
+    transform: translate(-50%, -50%) scale(0);
+    inline-size: 60px; /* Adjust size as needed */
+    block-size: auto;
+    animation: scaleUp 2.2s ease-out forwards; 
+  }
+  .overlay-image1 {
+    position: absolute;
+    inset-block-start: 35%; /* Center vertically */
+    inset-inline-start: 54%; /* Center horizontally */
+    transform: translate(-50%, -50%) scale(0);
+    inline-size: 60px; /* Adjust size as needed */
+    block-size: auto;
+    animation: scaleUp 2.2s ease-out forwards; 
+  }
+  .overlay-image2 {
+    position: absolute;
+    inset-block-start: 35%; /* Center vertically */
+    inset-inline-start: 64%; /* Center horizontally */
+    transform: translate(-50%, -50%) scale(0);
+    inline-size: 60px; /* Adjust size as needed */
+    block-size: auto;
+    animation: scaleUp 2.2s ease-out forwards; 
+  }
+  .overlay-image6 {
+    position: absolute;
+    inset-block-start: 54%; /* Center vertically */
+    inset-inline-start: 34%; /* Center horizontally */
+    transform: translate(-50%, -50%) scale(0);
+    inline-size: 60px; /* Adjust size as needed */
+    block-size: auto;
+    animation: scaleUp 2.2s ease-out forwards; 
+  }
+  .overlay-image7 {
+    position: absolute;
+    inset-block-start: 54%; /* Center vertically */
+    inset-inline-start: 44%; /* Center horizontally */
+    transform: translate(-50%, -50%) scale(0);
+    inline-size: 60px; /* Adjust size as needed */
+    block-size: auto;
+    animation: scaleUp 2.2s ease-out forwards; 
+  }
+  .overlay-image {
+    position: absolute;
+    inset-block-start: 54%; /* Center vertically */
+    inset-inline-start: 54%; /* Center horizontally */
+    transform: translate(-50%, -50%) scale(0);
+    inline-size: 60px; /* Adjust size as needed */
+    block-size: auto;
+    animation: scaleUp 2.2s ease-out forwards; 
+  }
+  
+  .overlay-image3 {
+    position: absolute;
+    inset-block-start: 54%; /* Center vertically */
+    inset-inline-start: 64%; /* Center horizontally */
+    transform: translate(-50%, -50%) scale(0);
+    inline-size: 60px; /* Adjust size as needed */
+    block-size: auto;
+    animation: scaleUp 2.2s ease-out forwards; 
+  }
+  
+  .overlay-image8 {
+    position: absolute;
+    inset-block-start: 55%; /* Center vertically */
+    inset-inline-start: 54%; /* Center horizontally */
+    transform: translate(-50%, -50%) scale(0);
+    inline-size: 60px; /* Adjust size as needed */
+    block-size: auto;
+    animation: scaleUp 2.2s ease-out forwards; 
+  }
+  
+  .overlay-image9 {
+    position: absolute;
+    inset-block-start: 90%; /* Center vertically */
+    inset-inline-start: 95%; /* Center horizontally */
+    transform: translate(-50%, -50%) scale(0);
+    inline-size: 80px; /* Adjust size as needed */
+    block-size: auto;
+    animation: scaleUp 2.2s ease-out forwards; 
+  }
+  
+  @keyframes scaleUp {
+    0% {
+      transform: translate(-50%, -50%) scale(0); /* Start small */
+      opacity: 0; /* Start invisible */
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.2); /* Slight overshoot */
+      opacity: 1; /* Fade in */
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1); /* Settle to final size */
+    }
+  }
+  

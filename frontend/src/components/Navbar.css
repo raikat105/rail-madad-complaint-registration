@@ -15,10 +15,10 @@ body {
   background-color: transparent;
   color: white;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 80px;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 100%;
+  block-size: 80px;
   z-index: 1000;
   padding: 0 1rem;
   box-shadow: none;
@@ -30,8 +30,8 @@ body {
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-left: 85px;
-  margin-top: 15px;
+  margin-inline-start: 85px;
+  margin-block-start: 15px;
   z-index: 10;
   text-shadow: 2px 2px 5px gray;
 }
@@ -47,7 +47,7 @@ body {
 .navbar {
   display: flex;
   gap: 2rem;
-  width: 45%;
+  inline-size: 45%;
   align-items: center;
   padding: 10px 0;
   background-color: transparent;
@@ -62,12 +62,12 @@ body {
   background-color: white;
   border-radius: 40px;
   margin: 0 auto;
-  margin-top: 10px;
+  margin-block-start: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 900;
   position: relative;
-  width: fit-content;
-  margin-left: 245px;
+  inline-size: fit-content;
+  margin-inline-start: 245px;
 }
 
 .nav-links {
@@ -102,13 +102,13 @@ body {
 .dropdown-box {
   display: none; /* Hidden by default */
   position: absolute;
-  top: 115%; /* Positioned directly below the nav item */
-  left: -50px; /* Shifted 20px to the left */
+  inset-block-start: 115%; /* Positioned directly below the nav item */
+  inset-inline-start: -50px; /* Shifted 20px to the left */
   background-color: rgb(220, 229, 244);
   padding: 20px;
   box-shadow: 0px 0px 1000px rgba(70, 74, 183, 0.2);
   border-radius: 5px;
-  width: 200px; /* Adjust width as needed */
+  inline-size: 200px; /* Adjust width as needed */
   text-align: center;
   z-index: 1000;
   transition: all 0.3s ease; /* Smooth transition */
@@ -117,13 +117,13 @@ body {
 .dropdown-box1 {
   display: none; /* Hidden by default */
   position: absolute;
-  bottom: 110%; /* Positioned directly below the nav item */
-  left: -50px; /* Shifted 20px to the left */
+  inset-block-end: 110%; /* Positioned directly below the nav item */
+  inset-inline-start: -50px; /* Shifted 20px to the left */
   background-color: white;
   padding: 20px;
   box-shadow: 0px 0px 1000px rgba(70, 74, 183, 0.2);
   border-radius: 5px;
-  width: 180px; /* Adjust width as needed */
+  inline-size: 180px; /* Adjust width as needed */
   text-align: center;
   z-index: 1000;
   transition: all 0.3s ease; /* Smooth transition */
@@ -166,8 +166,8 @@ body {
 .lang-switch {
   display: flex;
   align-items: center;
-  margin-right: 150px;
-  margin-top: 13px;
+  margin-inline-end: 150px;
+  margin-block-start: 13px;
 }
 
 .lang-switch .language-selector {
@@ -244,9 +244,9 @@ body {
 
 .btn2 {
   white-space: nowrap; /* Prevent button text wrapping */
-  height: 40px; /* Match input height */
+  block-size: 40px; /* Match input height */
   padding: 0 15px; /* Keep button padding consistent */
-margin-right: 50px;}
+  margin-inline-end: 50px;}
 
 .btn2{
   
@@ -264,9 +264,9 @@ margin-right: 50px;}
 
 .btn3 {
   white-space: nowrap; /* Prevent button text wrapping */
-  height: 40px; /* Match input height */
+  block-size: 40px; /* Match input height */
   padding: 0 15px;
-  margin-left: 350px; /* Keep button padding consistent */
+  margin-inline-start: 350px; /* Keep button padding consistent */
 }
 
 .btn3 {
