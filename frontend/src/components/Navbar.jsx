@@ -1,110 +1,63 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider";
-import axios from "axios";
-import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
 
-import './Navbar.css';
-import logo from '../Assets/icon.jpg';
-import { LuPhoneCall } from "react-icons/lu";
-import { PiPersonArmsSpreadThin } from "react-icons/pi";
+const Navbar = () => {
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
 
-export default function Navbar() {
-    const [language, setLanguage] = useState('English');
+  const handleLanguageChange = (event) => {
+    setSelectedLanguage(event.target.value);
+  };
 
-    const handleLanguageChange = (event) => {
-        setLanguage(event.target.value);
-    };
+  return (
+    <header className="header">
+      <Link to="/" className="logo">
+        <p>
+          <span className="first">Rail</span>
+          <span className="second">Mate</span>
+        </p>
+      </Link>
+      <nav className="navbar">
+        <div className="nav-box">
+          <ul className="nav-links">
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/complaints">Complaints</Link>
+            </li>
+            <li>
+              <Link to="/">Feed</Link>
+            </li>
+            <li>
+              <Link to="/dashboard">Dashboard</Link> {/* Corrected path */}
+            </li>
+            <li>
+              <Link to="/contact">Contact</Link>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div className="lang-switch">
+        <select
+          value={selectedLanguage}
+          onChange={handleLanguageChange}
+          className="language-selector"
+        >
+          <option value="en">English</option>
+          <option value="hi">हिन्दी (Hindi)</option>
+          <option value="bn">বাংলা (Bengali)</option>
+          <option value="mr">मराठी (Marathi)</option>
+          <option value="ta">தமிழ் (Tamil)</option>
+          <option value="te">తెలుగు (Telugu)</option>
+          <option value="or">ଓଡ଼ିଆ (Odia)</option>
+          <option value="ur">اردو (Urdu)</option>
+          <option value="kn">ಕನ್ನಡ (Kannada)</option>
+          <option value="sa">संस्कृतम् (Sanskrit)</option>
+        </select>
+      </div>
+    </header>
+  );
+};
 
-    const { profile, isAuthenticated, setIsAuthenticated } = useAuth();
-    console.log(profile?.user);
-    const navigateTo = useNavigate();
-  
-    const handleLogout = async (e) => {
-        e.preventDefault();
-        try {
-            const { data } = await axios.get(
-                "http://localhost:4001/api/users/logout",
-                { withCredentials: true }
-            );
-            console.log(data);
-            toast.success(data.message);
-            setIsAuthenticated(false);
-            navigateTo("/login");
-        } catch (error) {
-            console.log(error);
-            toast.error("Failed to logout");
-        }
-    };
-
-    return (
-        <nav className="nav text-black">
-            <div className="site_image">
-                <img src={logo} alt="RailMadad Logo" className="img" />
-            </div>
-            <div className="site_name">
-                <h1 className="name">RailMadad</h1>
-                <p className="para">For Inquiry, Assistance and Grievance Redressal</p>
-            </div>
-            <div className="number">
-                <span className="phone"><LuPhoneCall />139</span>
-                <p className="para_p">for Security/Medical Assistance</p>
-            </div>
-            <div className="entry">
-                <div className="hidden md:flex space-x-2">
-                    {isAuthenticated && profile?.user?.role === "admin" ? (
-                        <Link
-                            to="/dashboard"
-                            className="bg-blue-600 text-white font-semibold hover:bg-blue-800 duration-300 px-4 py-2 rounded"
-                        >
-                            DASHBOARD
-                        </Link>
-                    ) : null}
-
-                    {!isAuthenticated ? (
-                        <>
-                            <Link
-                                to="/Login"
-                                className="bg-red-600 text-white font-semibold hover:bg-red-800 duration-300 px-4 py-2 rounded"
-                            >
-                                LOGIN
-                            </Link>
-                            <Link
-                                to="/signup"
-                                className="bg-green-600 text-white font-semibold hover:bg-green-800 duration-300 px-4 py-2 rounded"
-                            >
-                                SIGN UP
-                            </Link>
-                        </>
-                    ) : (
-                        <button
-                            onClick={handleLogout}
-                            className="bg-red-600 text-white font-semibold hover:bg-red-800 duration-300 px-4 py-2 rounded"
-                        >
-                            LOGOUT
-                        </button>
-                    )}
-                </div>
-                <div className="language_selector">
-                    <select
-                        className="language_dropdown"
-                        value={language}
-                        onChange={handleLanguageChange}
-                    >
-                        <option value="English">English</option>
-                        <option value="Hindi">हिंदी</option>
-                        <option value="Bengali">বাংলা</option>
-                        <option value="Tamil">தமிழ்</option>
-                        <option value="Telugu">తెలుగు</option>
-                        <option value="Urdu">اردو</option>
-                        <option value="Marathi">मराठी</option>
-                        <option value="Sanskrit">संस्कृत</option>
-                    </select>
-                </div>
-                <div className="icons">
-                    <div className="icon1"><PiPersonArmsSpreadThin /></div>
-                </div>
-            </div>
-        </nav>
-    );
-}
+export default Navbar;

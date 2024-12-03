@@ -5,19 +5,20 @@ import fileUpload from "express-fileupload";
 import { v2 as cloudinary } from "cloudinary";
 import cookieParser from "cookie-parser";
 import userRoute from "./routes/user.route.js";
-import complaintRoute from "./routes/complaint.route.js";
 import http from "http";
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 import cors from "cors";
 const app = express();
 dotenv.config();
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const port = process.env.PORT;
 const MONGO_URL = process.env.MONGO_URI;
 
 //middleware
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(
 	cors({
@@ -44,7 +45,6 @@ try {
 
 // defining routes
 app.use("/api/users", userRoute);
-app.use("/api/complaint", complaintRoute);
 
 // Cloudinary
 cloudinary.config({
@@ -59,56 +59,72 @@ app.listen(port, () => {
 
 app.post("/pnr-status", (req, res) => {
 	const { pnr } = req.body;
-	console.log(pnr);
-	if (!pnr || pnr.length !== 10) {
+
+	// Validate PNR number
+	if (!pnr || pnr.length !== 10 || isNaN(pnr)) {
 		return res
 			.status(400)
 			.json({ status: "error", message: "Invalid PNR number." });
 	}
-	console.log(pnr);
+
+	// Options for HTTPS request
 	const options = {
 		method: "GET",
 		hostname: "irctc-indian-railway-pnr-status.p.rapidapi.com",
-		port: null,
 		path: `/getPNRStatus/${pnr}`,
 		headers: {
-			"x-rapidapi-key": "14497601b1mshd129f732e915c72p104366jsn916ae8ff0c31", // Replace with your RapidAPI key
+			"x-rapidapi-key": process.env.RAPIDAPI_KEY, // Use environment variable for the API key
 			"x-rapidapi-host": "irctc-indian-railway-pnr-status.p.rapidapi.com",
 		},
 	};
 
-	const apiReq = http.request(options, (apiRes) => {
-		const chunks = [];
+	// Make the API request
+	const apiReq = https.request(options, (apiRes) => {
+		let data = "";
 
+		// Collect data chunks
 		apiRes.on("data", (chunk) => {
-			chunks.push(chunk);
+			data += chunk;
 		});
 
+		// Process the complete response
 		apiRes.on("end", () => {
-			const body = Buffer.concat(chunks).toString();
-			console.log(body);
-			const parsedBody = JSON.parse(body);
+			try {
+				const parsedBody = JSON.parse(data);
 
-			if (parsedBody.error) {
-				return res
-					.status(500)
-					.json({ status: "error", message: "Unable to fetch PNR status." });
+				if (parsedBody.error) {
+					return res.status(500).json({
+						status: "error",
+						message: "Unable to fetch PNR status.",
+						errorDetails: parsedBody.error,
+					});
+				}
+				console.log(parsedBody);
+
+				res.json({
+					status: "success",
+					pnrDetails: parsedBody,
+				});
+			} catch (err) {
+				// Handle JSON parsing errors
+				console.error("Error parsing API response:", err.message);
+				return res.status(500).json({
+					status: "error",
+					message: "Failed to process PNR response.",
+				});
 			}
-
-			res.json({
-				status: "success",
-				pnrDetails: parsedBody,
-			});
 		});
 	});
 
+	// Handle request errors
 	apiReq.on("error", (err) => {
-		console.error(err);
+		console.error("Request error:", err.message);
 		res
 			.status(500)
 			.json({ status: "error", message: "Failed to connect to RapidAPI." });
 	});
 
+	// End the request
 	apiReq.end();
 });
 
@@ -138,7 +154,7 @@ app.post("/train-status", (req, res) => {
 		},
 	};
 
-	const apiReq = http.request(options, function (apiRes) {
+	const apiReq = https.request(options, function (apiRes) {
 		const chunks = [];
 
 		apiRes.on("data", function (chunk) {
@@ -175,23 +191,19 @@ app.post("/train-status", (req, res) => {
 });
 
 app.post("/chat", (req, res) => {
-	const openai = new OpenAI({ apiKey: process.env.API_KEY });
-	const prompt =
-		"You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. Their next command is : " +
-		req.body.message +
-		"  \nAnswer Accordingly, just like a station helpline would do. Keep it kind of short. if the person asks for PNR, tell him to use IRCTC's website or RailMadad's PNR Status enquiry part. If he asks for Live Train Running Status, do the same again. Read IRCTC docs and give general enquiry details in brief as per the question.";
-	async function main() {
-		const response = await openai.chat.completions.create({
-			model: "gpt-4o-mini",
-			messages: [
-				{
-					role: "user",
-					content: [{ type: "text", text: prompt }],
-				},
-			],
-		});
-		console.log(response.choices[0]);
-		res.json({text : response.choices[0].message.content})
-	}
-	main();
+	const yes = async () => {
+		const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+		const prompt =
+			"You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. Their next command is : " +
+			req.body.message +
+			"  \nAnswer Accordingly, just like a station helpline would do. Keep it kind of short. if the person asks for PNR, tell him to use IRCTC's website or RailMadad's PNR Status enquiry part. If he asks for Live Train Running Status, do the same again. Read IRCTC docs and give general enquiry details in brief as per the question.";
+
+		const result = await model.generateContent(prompt);
+		console.log(result.response.text());
+
+		res.json({ text: result.response.text() });
+	};
+	yes();
 });
