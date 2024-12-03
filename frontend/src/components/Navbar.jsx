@@ -6,7 +6,6 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
 
   const { profile, isAuthenticated, setIsAuthenticated } = useAuth();
   console.log(profile?.user);

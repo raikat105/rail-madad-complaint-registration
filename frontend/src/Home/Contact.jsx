@@ -1,5 +1,5 @@
 import React from "react";
-import img from "../Assets/Train.jpg";
+// import img from "../Assets/Train.jpg";
 import "../Home/Contact.css";
 import Footer from "../components/Footer.jsx";
 const Contact = () => {

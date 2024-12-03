@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../src/components/Navbar";
-import Footer from "../src/components/Footer";
+// import Footer from "../src/components/Footer";
 import { Route, Routes, useLocation, Navigate } from "react-router-dom";
 import Login from "../src/pages/Login";
 import Register from "../src/pages/Register";
@@ -9,7 +9,7 @@ import { Toaster } from "react-hot-toast";
 import Body from "./Home/Body";
 import Dashboard from "./Home/Dashboard";
 import Contact from "./Home/Contact";
-import Chat from "./Home/Chat";
+// import Chat from "./Home/Chat";
 import Form from "./Home/Form";
 import Home from "./Home/Home";
 
