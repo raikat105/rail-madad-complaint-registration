@@ -5,7 +5,7 @@ import requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-app = Flask(_name_)
+app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 CLOUDINARY_CLOUD_NAME = "dehbw4s0x"  # Replace with your Cloudinary cloud name
@@ -69,5 +69,5 @@ def handle_upload():
         print("Error:", e)
         return jsonify({"error": str(e)}), 400
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     app.run(debug=True)
