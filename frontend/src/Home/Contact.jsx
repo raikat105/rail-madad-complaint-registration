@@ -1,7 +1,7 @@
 import React from "react";
 // import img from "../Assets/Train.jpg";
 import "../Home/Contact.css";
-import Footer from "../components/Footer.jsx";
+// import Footer from "../components/Footer.jsx";
 const Contact = () => {
   return (
     <div className="contact">
@@ -40,7 +40,7 @@ const Contact = () => {
         </div>
       </div> */}
       <div className="finish">
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </div>
   );

@@ -20,4 +20,5 @@ body, html {
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover; /* Ensures the video fills the screen */
+  filter: blur(10px);
 }
