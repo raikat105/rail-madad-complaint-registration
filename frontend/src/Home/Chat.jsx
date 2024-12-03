@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import chatbot from "../Assets/chatbot.png";
 import "./Chat.css";
 
 function App() {
@@ -60,7 +61,8 @@ function App() {
         <div className="app">
             {!isChatVisible && (
                 <div className="chat-icon" onClick={toggleChat}>
-                    <img src="../Assets/logo.jpg" alt="Chat Icon" />
+                    <img src={chatbot} alt="Chat Icon" />
+                    <p className="white">Ask RailMate</p>
                 </div>
             )}
 

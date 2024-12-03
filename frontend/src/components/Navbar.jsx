@@ -20,41 +20,56 @@ const Navbar = () => {
       <nav className="navbar">
         <div className="nav-box">
           <ul className="nav-links">
-            <li>
+            <li className="nav-item">
               <Link to="/">Home</Link>
+              <div className="dropdown-box">
+                <p>Welcome to Home!</p>
+              </div>
             </li>
-            <li>
+            <li className="nav-item">
               <Link to="/complaints">Complaints</Link>
+              <div className="dropdown-box">
+                <p>Submit your complaints here!</p>
+              </div>
             </li>
-            <li>
+            <li className="nav-item">
               <Link to="/">Feed</Link>
+              <div className="dropdown-box">
+                <p>View the latest updates!</p>
+              </div>
             </li>
-            <li>
-              <Link to="/dashboard">Dashboard</Link> {/* Corrected path */}
+            <li className="nav-item">
+              <Link to="/dashboard">Dashboard</Link>
+              <div className="dropdown-box">
+                <p>Access your dashboard.</p>
+              </div>
             </li>
-            <li>
+            <li className="nav-item">
               <Link to="/contact">Contact</Link>
+              <div className="dropdown-box">
+                <p>Contact us for support!</p>
+              </div>
             </li>
           </ul>
         </div>
       </nav>
-      <div className="lang-switch">
-        <select
-          value={selectedLanguage}
-          onChange={handleLanguageChange}
-          className="language-selector"
-        >
-          <option value="en">English</option>
-          <option value="hi">हिन्दी (Hindi)</option>
-          <option value="bn">বাংলা (Bengali)</option>
-          <option value="mr">मराठी (Marathi)</option>
-          <option value="ta">தமிழ் (Tamil)</option>
-          <option value="te">తెలుగు (Telugu)</option>
-          <option value="or">ଓଡ଼ିଆ (Odia)</option>
-          <option value="ur">اردو (Urdu)</option>
-          <option value="kn">ಕನ್ನಡ (Kannada)</option>
-          <option value="sa">संस्कृतम् (Sanskrit)</option>
-        </select>
+      <div>
+        <ul className="nav-item"><button type="button" className="btn3">
+          {" "}
+          Login
+          </button>
+          <div className="dropdown-box">
+                <p>Already registered.</p>
+          </div></ul>
+      </div> 
+      <div>
+      <ul className="nav-item"><button type="button" className="btn2">
+          {" "}
+          Sign Up
+          </button>
+          <div className="dropdown-box">
+                <p>Create new account.</p>
+          </div></ul>
       </div>
     </header>
   );

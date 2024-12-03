@@ -1,36 +1,160 @@
 body, html {
-    top:0;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: auto;
-    background-color: none;
+  top: 0;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: auto;
+  background-color: none;
+}
+
+.video-container {
+  position: fixed; /* Covers the entire viewport */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Places it behind other content */
+}
+
+.video-container .background-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the video fills the screen */
+}
+.image-container{
+  position: relative;
+}
+
+.image-text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #fcfcfc;
+  font-family: Arial, sans-serif;
+  font-size: 0.9rem;
+  margin-left: 10px;
+  /* text-shadow: 0 0 100px #080808; */
+  text-shadow:  -1px 0px 2px black;
+}
+.image-text:hover
+{
+  font-size: 1rem;
+  line-height: 1.2;
+  color: #429bf4;
+  text-shadow: 1px 1px 2px black;
+  text-decoration: underline;
+
+}
+.overlay-image5 {
+  position: absolute;
+  top: 35%; /* Center vertically */
+  left: 34%; /* Center horizontally */
+  transform: translate(-50%, -50%) scale(1); /* Start with normal size */
+  width: 60px; /* Adjust size as needed */
+  height: auto;
+  animation: scaleUp 2.2s ease-out forwards;
+  transition: transform 0.3s ease; /* Smooth transition on hover */
+}
+
+.overlay-image4 {
+  position: absolute;
+  top: 35%; /* Center vertically */
+  left: 44%; /* Center horizontally */
+  transform: translate(-50%, -50%) scale(0);
+  width: 60px; /* Adjust size as needed */
+  height: auto;
+  animation: scaleUp 2.2s ease-out forwards; 
+}
+.overlay-image1 {
+  position: absolute;
+  top: 35%; /* Center vertically */
+  left: 54%; /* Center horizontally */
+  transform: translate(-50%, -50%) scale(0);
+  width: 60px; /* Adjust size as needed */
+  height: auto;
+  animation: scaleUp 2.2s ease-out forwards; 
+}
+.overlay-image2 {
+  position: absolute;
+  top: 35%; /* Center vertically */
+  left: 64%; /* Center horizontally */
+  transform: translate(-50%, -50%) scale(0);
+  width: 60px; /* Adjust size as needed */
+  height: auto;
+  animation: scaleUp 2.2s ease-out forwards; 
+}
+.overlay-image6 {
+  position: absolute;
+  top: 54%; /* Center vertically */
+  left: 34%; /* Center horizontally */
+  transform: translate(-50%, -50%) scale(0);
+  width: 60px; /* Adjust size as needed */
+  height: auto;
+  animation: scaleUp 2.2s ease-out forwards; 
+}
+.overlay-image7 {
+  position: absolute;
+  top: 54%; /* Center vertically */
+  left: 44%; /* Center horizontally */
+  transform: translate(-50%, -50%) scale(0);
+  width: 60px; /* Adjust size as needed */
+  height: auto;
+  animation: scaleUp 2.2s ease-out forwards; 
+}
+.overlay-image {
+  position: absolute;
+  top: 54%; /* Center vertically */
+  left: 54%; /* Center horizontally */
+  transform: translate(-50%, -50%) scale(0);
+  width: 60px; /* Adjust size as needed */
+  height: auto;
+  animation: scaleUp 2.2s ease-out forwards; 
+}
+
+.overlay-image3 {
+  position: absolute;
+  top: 54%; /* Center vertically */
+  left: 64%; /* Center horizontally */
+  transform: translate(-50%, -50%) scale(0);
+  width: 60px; /* Adjust size as needed */
+  height: auto;
+  animation: scaleUp 2.2s ease-out forwards; 
+}
+
+.overlay-image8 {
+  position: absolute;
+  top: 55%; /* Center vertically */
+  left: 54%; /* Center horizontally */
+  transform: translate(-50%, -50%) scale(0);
+  width: 60px; /* Adjust size as needed */
+  height: auto;
+  animation: scaleUp 2.2s ease-out forwards; 
+}
+
+.overlay-image9 {
+  position: absolute;
+  top: 90%; /* Center vertically */
+  left: 95%; /* Center horizontally */
+  transform: translate(-50%, -50%) scale(0);
+  width: 80px; /* Adjust size as needed */
+  height: auto;
+  animation: scaleUp 2.2s ease-out forwards; 
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: translate(-50%, -50%) scale(0); /* Start small */
+    opacity: 0; /* Start invisible */
   }
-  
-  .video-container {
-    position: fixed; /* Covers the entire viewport */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1; /* Places it behind other content */
+  50% {
+    transform: translate(-50%, -50%) scale(1.2); /* Slight overshoot */
+    opacity: 1; /* Fade in */
   }
-  
-  .video-container .background-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensures the video fills the screen */
+  100% {
+    transform: translate(-50%, -50%) scale(1); /* Settle to final size */
   }
-  
-  .content {
-    position: relative; /* Keeps the text content above the video */
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: white;
-    font-family: Arial, sans-serif;
-    font-size: 2rem;
-  }
+}
