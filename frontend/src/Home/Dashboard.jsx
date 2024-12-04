@@ -23,7 +23,7 @@ const Dashboard = () => {
               <a href="/complaint-history">Complaint History</a>
             </li>
             <li>
-              <a href="/current-complaint-status">Current Complaint Status</a>
+              <Link to="/current-complaint-status">Current Complaint Status</Link>
             </li>
             <li>
               <Link to="/complaints">New Complaints</Link>

@@ -79,9 +79,11 @@ export const getMyComplaints = async (req, res) => {
 // Get a single complaint by ID
 export const getComplaintById = async (req, res) => {
 	try {
-		const { id } = req.params;
-		const complaint = await Complaint.findById(id);
-
+		console.log(req.query)
+		const { complaintId } = req.query;
+		console.log(complaintId)
+		const complaint = await Complaint.find({complaintId: complaintId});
+		console.log(complaint)
 		if (!complaint) {
 			return res.status(404).json({ message: "Complaint not found" });
 		}

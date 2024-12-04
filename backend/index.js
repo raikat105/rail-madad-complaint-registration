@@ -10,7 +10,6 @@ import https from "https";
 import OpenAI from "openai";
 import multer from "multer";
 import bodyParser from "body-parser";
-import fs from "fs";
 
 const upload = multer();
 

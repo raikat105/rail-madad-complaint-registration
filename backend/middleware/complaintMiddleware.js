@@ -3,8 +3,8 @@ import { Complaint } from "../models/complaint.model.js";
 // Middleware to check if a complaint exists
 export const validateComplaintExists = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const complaint = await Complaint.findById(id);
+    const { complaintId } = req.params;
+    const complaint = await Complaint.find({complaintId: complaintId});
 
     if (!complaint) {
       return res.status(404).json({ message: "Complaint not found" });

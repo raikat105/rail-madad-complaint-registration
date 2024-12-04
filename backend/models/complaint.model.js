@@ -69,7 +69,7 @@ const complaintSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now,
-  },
+  }
 });
 
 export const  Complaint = mongoose.model('Complaint', complaintSchema);

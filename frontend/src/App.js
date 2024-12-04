@@ -12,6 +12,7 @@ import Contact from "./Home/Contact";
 // import Chat from "./Home/Chat";
 import Form from "./Home/Form";
 import Home from "./Home/Home";
+import ComplaintStatusPage from "./Home/ComplaintStatusPage";
 
 function App() {
   const location = useLocation();
@@ -48,6 +49,7 @@ function App() {
         <Route path="/contact" element={<><Body /> <Contact /></>} />
         <Route path="/feed" element={<><Body /></>} />
         <Route path="/complaints" element={<><Body /> <Form /></>} />
+        <Route path="/current-complaint-status" element={<><Body /><ComplaintStatusPage /></>} />
         <Route path="*" element={<div>Page Not Found</div>} />
       </Routes>
       <Toaster />
