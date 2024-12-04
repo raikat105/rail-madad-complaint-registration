@@ -32,42 +32,61 @@ def handle_upload():
         print("Received data:", data)
 
         video_url = data.get('videoUrl')
-        if not video_url:
-            return jsonify({"error": "No video URL provided"}), 400
+        image_url = data.get('imageUrl')
+        audi0_url = data.get('audioUrl')
 
-        # Temporary directory to store frames
+        # Temporary directory to store frames and audio
         temp_dir = tempfile.mkdtemp()
         output_pattern = os.path.join(temp_dir, "frame_%03d.jpg")
+        audio_output_path = os.path.join(temp_dir, "audio.mp3")
 
-        # Use ffmpeg to extract 20 frames from the video
-        try:
-            subprocess.run(
-                [
-                    "ffmpeg", "-i", video_url,
-                    "-vf", "select='not(mod(n,5))'",  # Get every 5th frame
-                    "-frames:v", "20",  # Limit to 20 frames
-                    "-vsync", "vfr", output_pattern
-                ],
-                check=True
-            )
+        if video_url :
+            try:
+                # Extract frames
+                subprocess.run(
+                    [
+                        "ffmpeg", "-i", video_url,
+                        "-vf", "select='not(mod(n,5))'",  # Get every 5th frame
+                        "-frames:v", "20",  # Limit to 20 frames
+                        "-vsync", "vfr", output_pattern
+                    ],
+                    check=True
+                )
 
-            # Upload frames to Cloudinary and collect URLs
-            frame_files = sorted([os.path.join(temp_dir, f) for f in os.listdir(temp_dir)])
-            cloudinary_urls = []
-            for frame in frame_files:
-                url = upload_to_cloudinary(frame)
-                cloudinary_urls.append(url)
+                # Extract audio
+                subprocess.run(
+                    [
+                        "ffmpeg", "-i", video_url,
+                        "-q:a", "0", "-map", "a", audio_output_path  # Extract audio to MP3
+                    ],
+                    check=True
+                )
 
-            # Return the Cloudinary URLs to the frontend
-            return jsonify({"message": "Frames uploaded successfully", "frames": cloudinary_urls}), 200
+                # Upload frames to Cloudinary and collect URLs
+                frame_files = sorted([os.path.join(temp_dir, f) for f in os.listdir(temp_dir) if f.endswith(".jpg")])
+                cloudinary_urls = []
+                for frame in frame_files:
+                    url = upload_to_cloudinary(frame)
+                    cloudinary_urls.append(url)
 
-        except subprocess.CalledProcessError as e:
-            print("Error during ffmpeg processing:", e)
-            return jsonify({"error": "Failed to extract frames from video"}), 500
+                # Upload audio file to Cloudinary
+                audio_url = upload_to_cloudinary(audio_output_path, resource_type="video")  # Use `video` for non-image resources
+
+                # Return the Cloudinary URLs to the frontend
+                return jsonify({
+                    "message": "Frames and audio uploaded successfully",
+                    "frames": cloudinary_urls,
+                    "audio": audio_url
+                }), 200
+
+            except subprocess.CalledProcessError as e:
+                print("Error during ffmpeg processing:", e)
+                return jsonify({"error": "Failed to process video"}), 500
 
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": str(e)}), 400
+
 
 if __name__ == '__main__':
     app.run(debug=True)
