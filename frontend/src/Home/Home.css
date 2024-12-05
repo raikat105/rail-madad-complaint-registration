@@ -1,7 +1,4 @@
 
-.image-container{
-    position: relative;
-  }
   
   .image-text {
     position: relative;
@@ -16,18 +13,19 @@
     font-size: 0.9rem;
     margin-inline-start: 10px;
     /* text-shadow: 0 0 100px #080808; */
-    text-shadow:  -1px 0px 2px black;
+    text-shadow: 1px 1px 2px black, -1px -1px 2px gray;
   }
   .image-text:hover
   {
     font-size: 1rem;
     line-height: 1.2;
-    color: #429bf4;
-    text-shadow: 1px 1px 2px black;
+    color: #1e90ff;
+    text-shadow: 1px 1px 2px black, -1px -1px 2px gray;
     text-decoration: underline;
-  
+
   }
-  .overlay-image5 {
+    
+.overlay-image5 {
     position: absolute;
     inset-block-start: 35%; /* Center vertically */
     inset-inline-start: 34%; /* Center horizontally */
@@ -36,7 +34,9 @@
     block-size: auto;
     animation: scaleUp 2.2s ease-out forwards;
     transition: transform 0.3s ease; /* Smooth transition on hover */
+    z-index: 1;
   }
+
   
   .overlay-image4 {
     position: absolute;
@@ -46,6 +46,7 @@
     inline-size: 60px; /* Adjust size as needed */
     block-size: auto;
     animation: scaleUp 2.2s ease-out forwards; 
+    z-index: 1;
   }
   .overlay-image1 {
     position: absolute;
@@ -55,6 +56,7 @@
     inline-size: 60px; /* Adjust size as needed */
     block-size: auto;
     animation: scaleUp 2.2s ease-out forwards; 
+    z-index: 1;
   }
   .overlay-image2 {
     position: absolute;
@@ -64,6 +66,7 @@
     inline-size: 60px; /* Adjust size as needed */
     block-size: auto;
     animation: scaleUp 2.2s ease-out forwards; 
+    z-index: 1;
   }
   .overlay-image6 {
     position: absolute;
@@ -73,6 +76,7 @@
     inline-size: 60px; /* Adjust size as needed */
     block-size: auto;
     animation: scaleUp 2.2s ease-out forwards; 
+    z-index: 1;
   }
   .overlay-image7 {
     position: absolute;
@@ -82,6 +86,7 @@
     inline-size: 60px; /* Adjust size as needed */
     block-size: auto;
     animation: scaleUp 2.2s ease-out forwards; 
+    z-index: 1;
   }
   .overlay-image {
     position: absolute;
@@ -91,6 +96,7 @@
     inline-size: 60px; /* Adjust size as needed */
     block-size: auto;
     animation: scaleUp 2.2s ease-out forwards; 
+    z-index: 1;
   }
   
   .overlay-image3 {
@@ -101,6 +107,7 @@
     inline-size: 60px; /* Adjust size as needed */
     block-size: auto;
     animation: scaleUp 2.2s ease-out forwards; 
+    z-index: 1;
   }
   
   .overlay-image8 {
@@ -111,6 +118,7 @@
     inline-size: 60px; /* Adjust size as needed */
     block-size: auto;
     animation: scaleUp 2.2s ease-out forwards; 
+    z-index: 1;
   }
   
   .overlay-image9 {
@@ -121,7 +129,13 @@
     inline-size: 80px; /* Adjust size as needed */
     block-size: auto;
     animation: scaleUp 2.2s ease-out forwards; 
+    z-index: 1;
   }
+  
+  .overlay-image9:hover {
+    cursor: pointer;
+  }
+  
   
   @keyframes scaleUp {
     0% {
@@ -136,4 +150,3 @@
       transform: translate(-50%, -50%) scale(1); /* Settle to final size */
     }
   }
-  

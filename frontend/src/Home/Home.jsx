@@ -1,5 +1,6 @@
-// import React from "react";
-// import trainVideo from "../Assets/mark.mp4";
+import React from "react";
+import {Link} from "react-router-dom";
+
 import ticketbooking from "../Assets/ticketbooking.png";
 import trainenq from "../Assets/trainenq.png";
 import reservationenq from "../Assets/reservationen.png";
@@ -7,221 +8,86 @@ import freightbu from "../Assets/freightbu.png";
 import indian from "../Assets/indian.png";
 import utsenq from "../Assets/utsenq.png";
 import retire from "../Assets/retire.png";
-// import chatbot from "../Assets/chatbot.png";
-import "./Home.css";
-import React, { useState, useEffect } from "react";
 import chatbot from "../Assets/chatbot.png";
-import "./Chat.css";
 
-
+import "./Home.css";
 
 const Home = () => {
-    const [isChatVisible, setIsChatVisible] = useState(false);
-    const [messages, setMessages] = useState([]);
-    const [input, setInput] = useState("");
-    const [chatHistory, setChatHistory] = useState("");
+  return (
+    <>
+       
 
-    useEffect(() => {
-        if (isChatVisible && messages.length === 0) {
-            const welcomeMessage = "Welcome to Rail Madad! How may I assist you today?";
-            setMessages([{ type: "received", text: welcomeMessage }]);
-            setChatHistory((prev) => prev + `Chatbot: ${welcomeMessage}\n`);
-        }
-    }, [isChatVisible, messages]);
+      <Link to="https://www.irctc.co.in/nget/train-search" target="_blank">
+      <div className="image-container overlay-image5">
+        <img src={ticketbooking} alt="Ticket Booking" />
+        <p className="image-text">Ticket Booking</p>
+        </div>
+      </Link>
 
-    const toggleChat = () => {
-        setIsChatVisible(!isChatVisible);
-    };
+      <Link to="https://enquiry.indianrail.gov.in/mntes/" target="_blank">
+        <div className="image-container overlay-image3">
+          <img src={trainenq} alt="Train Inquiry" />
+          <p className="image-text">Train Inquiry</p>
+        </div>
+      </Link>
 
-    const sendMessage = async () => {
-        if (!input.trim()) return;
+      <Link to="https://www.fois.indianrail.gov.in/RailSAHAY/index.jsp" target="_blank">
+      <div className="image-container overlay-image1">
+        <img src={freightbu} alt="Freight Business" />
+        <p className="image-text">Freight Business</p>
+      </div>
+      </Link>
 
-        const payload = {
-            text: input.trim(),
-            chatHistory,
-        };
+      <Link to="https://play.google.com/store/apps/details?id=com.cris.utsmobile&hl=en_IN" target="_blank">
+      <div className="image-container overlay-image2">
+        <img src={utsenq} alt="UTS Inquiry" />
+        <p className="image-text">UTS Inquiry</p>
+      </div>
+      </Link>
 
-        const userMessage = { type: "sent", text: input };
-        setMessages((prev) => [...prev, userMessage]);
-        setChatHistory((prev) => prev + `User: ${input}\n`);
-        setInput("");
+      <Link to="https://indianrailways.gov.in/" target="_blank">
+      <div className="image-container overlay-image6">
+        <img src={indian} alt="Indian Railways" />
+        <p className="image-text">Indian Railways</p>
+      </div>
+      </Link>
 
-        try {
-            const url = "http://localhost:4001/chat";
-            const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
+      <Link to="https://www.indianrail.gov.in/enquiry/StaticPages/StaticEnquiry.jsp?StaticPage=index.html" target="_blank">
+      <div className="image-container overlay-image7">
+        <img src={reservationenq} alt="Reservation Inquiry" />
+        <p className="image-text">Reservation Inquiry</p>
+      </div>
+      </Link>
 
-            const data = await response.json();
-            const botReply = data.text;
+      <Link to="https://parcel.indianrail.gov.in/" target="_blank">
+      <div className="image-container overlay-image8">
+        <img src={utsenq} alt="UTS Inquiry" />
+        <p className="image-text">Railway Parcel Website</p>
+      </div>
+      </Link>
 
-            setMessages((prev) => [...prev, { type: "received", text: botReply }]);
-            setChatHistory((prev) => prev + `Chatbot: ${botReply}\n`);
-        } catch (error) {
-            const errorMessage = "Error: Unable to connect to the server.";
-            setMessages((prev) => [...prev, { type: "received", text: errorMessage }]);
-            setChatHistory((prev) => prev + `Chatbot: ${errorMessage}\n`);
-        }
-    };
+      <Link to="https://rr.irctc.co.in/home#/home" target="_blank">
+      <div className="image-container overlay-image4">
+        <img src={retire} alt="Retiring Room" />
+        <p className="image-text">Retiring Room</p>
+      </div>
+      </Link>
+       
+      <Link to="https://www.irctc.co.in/nget/train-search" target="_blank">
+      <div className="image-container overlay-image9">
+        <img src={chatbot} alt="Chatbot" />
+        <p className="image-text">Chatbot</p>
+      </div>
+      </Link>
 
-    const handleKeyDown = (event) => {
-        if (event.key === "Enter") sendMessage();
-    };
-    return (
-        <>
-            {/* Icons with dropdowns */}
-            <div className="image-container overlay-image5">
-                <ul className="nav-item">
-                    <img src={ticketbooking} alt="Ticket Booking" />
-                    <div className="image-text">
-                        <a href="https://www.irctc.co.in/nget/train-search" target="_blank" rel="noopener noreferrer">
-                            Ticket Booking
-                        </a>
-                    </div>
-                    <div className="dropdown-box1">
-                        <p>Directs to the official ticket booking portal for reserving train seats online.</p>
-                    </div></ul>
-            </div>
+      
+      
+    </>
+  
 
-            <div className="image-container overlay-image4">
-                <ul className="nav-item">
-                    <img src={trainenq} alt="Train Inquiry" />
-                    <p className="image-text">
-                        <a href="https://enquiry.indianrail.gov.in" target="_blank" rel="noopener noreferrer">
-                            Train Enquiry
-                        </a>
-                    </p>
-                    <div className="dropdown-box1">
-                        <p>Check train schedules and statuses!(Provides real-time updates)</p>
-                    </div></ul>
-            </div>
-
-            <div className="image-container overlay-image1">
-                <ul className="nav-item">
-                    <img src={freightbu} alt="Freight Business" />
-                    <p className="image-text">
-                        <a href="https://www.fois.indianrail.gov.in/RailSAHAY/index.jsp" target="_blank" rel="noopener noreferrer">
-                            Freight Business
-                        </a>
-                    </p>
-                    <div className="dropdown-box1">
-                        <p>Offers services for booking freight transportation for businesses.</p>
-                    </div></ul>
-            </div>
-
-            <div className="image-container overlay-image2">
-                <ul className="nav-item">
-                    <img src={utsenq} alt="UTS Ticketing" />
-                    < p className="image-text">
-                        <a href="https://www.utsonmobile.indianrail.gov.in" target="_blank" rel="noopener noreferrer">
-                            UTS Ticketing
-                        </a>
-                    </p>
-                    <div className="dropdown-box1">
-                        <p>Enables unreserved ticketing and inquiries for local and suburban trains.</p>
-                    </div></ul>
-            </div>
-
-            <div className="image-container overlay-image6">
-                <ul className="nav-item">
-                    <img src={indian} alt="Indian Railways" />
-                    <p className="image-text"><a href="https://indianrailways.gov.in" target="_blank" rel="noopener noreferrer">
-                        Indian Railways
-                    </a></p>
-                    <div className="dropdown-box">
-                        <p>Access the official website of Indian Railways for news, updates, and general information.</p>
-                    </div></ul>
-            </div>
-
-            <div className="image-container overlay-image7">
-                <ul className="nav-item">
-                    <img src={reservationenq} alt="Reservation Enquiry" />
-                    <p className="image-text">
-                        <a href="https://www.indianrail.gov.in/enquiry/StaticPages/StaticEnquiry.jsp?StaticPage=index.html" target="_blank" rel="noopener noreferrer">
-                            Reservation Enquiry
-                        </a></p>
-                    <div className="dropdown-box">
-                        <p>Check the status of your train ticket reservations, including PNR updates.</p>
-                    </div></ul>
-            </div>
-
-            <div className="image-container overlay-image8">
-                <ul className="nav-item">
-                    <img src={reservationenq} alt="Railway Parcel Website" />
-                    <p className="image-text">
-                        <a href="https://parcel.indianrail.gov.in/" target="_blank" rel="noopener noreferrer">
-                            Railway Parcel Website
-                        </a></p>
-                    <div className="dropdown-box">
-                        <p> Facilitates parcel booking and tracking for transporting goods by train.</p>
-                    </div></ul>
-            </div>
-
-            <div className="image-container overlay-image3">
-                <ul className="nav-item">
-                    <img src={retire} alt="Retiring Room" />
-                    <p className="image-text">
-                        <a href="https://rr.irctc.co.in/home#/home" target="_blank" rel="noopener noreferrer">
-                            Retiring Room
-                        </a></p>
-                    <div className="dropdown-box">
-                        <p>Helps you book retiring rooms for a comfortable stay at railway stations.</p>
-                    </div></ul>
-            </div>
-
-            {/* <div className="image-container overlay-image9">
-                <ul className="nav-item">
-                    <img src={chatbot} alt="Chatbot" />
-                    <p className="white">ChatBot</p>
-                    <div className="dropdown-box1">
-                        <ul class="bulleted-text">
-                            <li>Get AI assistance !</li>
-                        </ul>
-                    </div></ul>
-            </div> */}
-
-            <div className="app10">
-                {!isChatVisible && (
-                    <div className="chat-icon" onClick={toggleChat}>
-                        <img src={chatbot} alt="Chat Icon" />
-                        <p className="white">Ask RailMate</p>
-                    </div>
-                )}
-
-                {isChatVisible && (
-                    <div className="chat-window">
-                        <header className="chat-header">
-                            <h1>RailMadad</h1>
-                            <button className="minimize-btn" onClick={toggleChat}>
-                                –
-                            </button>
-                        </header>
-                        <div className="chat-messages">
-                            {messages.map((msg, index) => (
-                                <div key={index} className={`message ${msg.type}`}>
-                                    {msg.text && typeof msg.text === "string" && <p>{msg.text}</p>}
-                                </div>
-                            ))}
-                        </div>
-                        <footer className="chat-footer">
-                            <input
-                                type="text"
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                placeholder="Type your message..."
-                            />
-                            <button onClick={sendMessage}>Send</button>
-                        </footer>
-                    </div>
-                )}
-            </div>
-
-        </>
-
-    );
+  
+);
 };
 
 export default Home;
+
