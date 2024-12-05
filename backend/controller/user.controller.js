@@ -93,51 +93,46 @@ export const register = async (req, res) => {
       console.error(cloudinaryResponse.error);
       return res.status(500).json({ message: "Failed to upload photo" });
     }
-    console.log("khela hobe")
+
     // Step 8: Hash password and create new user
-    try {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = new User({
-        email,
-        name,
-        password: hashedPassword,
-        phone,
-        gender,
-        role,
-        department: role === "admin" ? department : undefined, // Set department only for admin role
-        photo: {
-          public_id: cloudinaryResponse.public_id,
-          url: cloudinaryResponse.url,
-        },
-      });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({
+      email,
+      name,
+      password: hashedPassword,
+      phone,
+      gender,
+      role,
+      department: role === "admin" ? department : undefined, // Set department only for admin role
+      photo: {
+        public_id: cloudinaryResponse.public_id,
+        url: cloudinaryResponse.url,
+      },
+    });
 
-      await newUser.save();
+    await newUser.save();
 
-      // Step 9: Create token and set cookie
-      const token = await createTokenAndSaveCookies(newUser._id, res);
-      res.status(201).json({
-        message: "User registered successfully",
-        user: {
-          id: newUser._id,
-          name: newUser.name,
-          email: newUser.email,
-          role: newUser.role,
-          department: newUser.department,
-        },
-        token: token,
-      });
-    } catch (error) {
-      if (error.code === 11000) {
-        return res.status(400).json({ message: "Duplicate entry detected", error });
-      }
-      console.error(error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
+    // Step 9: Create token and set cookie
+    const token = await createTokenAndSaveCookies(newUser._id, res);
+    res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        department: newUser.department,
+      },
+      token: token,
+    });
   } catch (error) {
-    console.error(error)
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "Duplicate entry detected", error });
+    }
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 // Generate and send OTP
 export const generateOtp = async (req, res) => {
