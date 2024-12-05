@@ -93,48 +93,53 @@ export const register = async (req, res) => {
       console.error(cloudinaryResponse.error);
       return res.status(500).json({ message: "Failed to upload photo" });
     }
-
+    console.log("khela hobe")
     // Step 8: Hash password and create new user
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({
-      email,
-      name,
-      password: hashedPassword,
-      phone,
-      gender,
-      role,
-      department: role === "admin" ? department : undefined, // Set department only for admin role
-      photo: {
-        public_id: cloudinaryResponse.public_id,
-        url: cloudinaryResponse.url,
-      },
-    });
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = new User({
+        email,
+        name,
+        password: hashedPassword,
+        phone,
+        gender,
+        role,
+        department: role === "admin" ? department : undefined, // Set department only for admin role
+        photo: {
+          public_id: cloudinaryResponse.public_id,
+          url: cloudinaryResponse.url,
+        },
+      });
 
-    await newUser.save();
+      await newUser.save();
 
-    // Step 9: Create token and set cookie
-    const token = await createTokenAndSaveCookies(newUser._id, res);
-    res.status(201).json({
-      message: "User registered successfully",
-      user: {
-        id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role,
-        department: newUser.department,
-      },
-      token: token,
-    });
-  } catch (error) {
-    if (error.code === 11000) {
-      return res.status(400).json({ message: "Duplicate entry detected", error });
+      // Step 9: Create token and set cookie
+      const token = await createTokenAndSaveCookies(newUser._id, res);
+      res.status(201).json({
+        message: "User registered successfully",
+        user: {
+          id: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          role: newUser.role,
+          department: newUser.department,
+        },
+        token: token,
+      });
+    } catch (error) {
+      if (error.code === 11000) {
+        return res.status(400).json({ message: "Duplicate entry detected", error });
+      }
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+  } catch (error) {
+    console.error(error)
   }
 };
 
-// Step 0: Generate and send OTP
+
+// Generate and send OTP
 export const generateOtp = async (req, res) => {
   try {
     const { email } = req.body;
@@ -143,14 +148,15 @@ export const generateOtp = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists with this email" });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString(); // Generate 6-digit OTP
-    otpStore.set(email, otp);
+    const expirationTime = Date.now() + 5 * 60 * 1000; // 5 minutes from now
+
+    otpStore.set(email, { otp, expiresAt: expirationTime });
 
     await sendOtpEmail(email, otp);
     res.status(200).json({ message: "OTP sent to your email" });
@@ -160,6 +166,40 @@ export const generateOtp = async (req, res) => {
   }
 };
 
+// Validate OTP (New Endpoint)
+export const validateOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ message: "Email and OTP are required" });
+    }
+
+    const entry = otpStore.get(email);
+
+    if (!entry) {
+      return res.status(400).json({ message: "OTP not found for this email" });
+    }
+
+    const { otp: storedOtp, expiresAt } = entry;
+
+    if (Date.now() > expiresAt) {
+      otpStore.delete(email);
+      return res.status(400).json({ message: "OTP has expired" });
+    }
+
+    if (storedOtp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    // Clear OTP after successful validation
+    otpStore.delete(email);
+    res.status(200).json({ message: "OTP validated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to validate OTP" });
+  }
+};
 
 
 // Login an existing user

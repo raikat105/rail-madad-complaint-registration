@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 
 function Register() {
-  const { isAuthenticated, setIsAuthenticated, setProfile } = useAuth();
+  const { setIsAuthenticated, setProfile } = useAuth();
   const navigateTo = useNavigate();
 
   const [otp, setOtp] = useState("");
@@ -42,22 +42,23 @@ function Register() {
   };
 
   const validateOtp = async () => {
-    console.log("Sending OTP validation request:", { email, otp });  // Debugging log
     try {
       const { data } = await axios.post(
-        "http://localhost:4001/api/users/verify-otp",
-        { email, otp },
-        { withCredentials: true } // This is important to send cookies
+        "http://localhost:4001/api/users/validate-otp",
+        { email, otp }
       );
-      
+
       toast.success(data.message || "OTP validated successfully!");
       setOtpValidated(true);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to validate OTP");
-      console.log("Error response:", error.response);  // Debugging log
+      const message = error.response?.data?.message || "Failed to validate OTP";
+      toast.error(message);
+
+      if (message === "OTP has expired") {
+        setOtpSent(false); // Allow resending OTP
+      }
     }
   };
-  
 
   const changePhotoHandler = (e) => {
     const file = e.target.files[0];
