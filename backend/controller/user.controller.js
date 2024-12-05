@@ -51,7 +51,7 @@ export const register = async (req, res) => {
     }
 
     // Step 2: Validate required fields
-    const requiredFields = ["email", "name", "password", "phone", "gender", "role", "otp"];
+    const requiredFields = ["email", "name", "password", "phone", "gender", "role"];
     const missingField = validateFields(requiredFields, req.body);
     if (missingField) {
       return res.status(400).json({ message: missingField });
@@ -80,11 +80,6 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "User already exists with this email" });
     }
 
-    // Step 6: Verify OTP
-    const storedOtp = otpStore.get(email);
-    if (!storedOtp || storedOtp !== otp) {
-      return res.status(400).json({ message: "Invalid or expired OTP" });
-    }
     otpStore.delete(email); // Clear OTP after successful validation
 
     // Step 7: Upload photo to Cloudinary
