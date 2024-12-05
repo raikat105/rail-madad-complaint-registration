@@ -6,9 +6,11 @@ import { useAuth } from "../context/AuthProvider";
 
 function Register() {
   const { isAuthenticated, setIsAuthenticated, setProfile } = useAuth();
-
   const navigateTo = useNavigate();
 
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpValidated, setOtpValidated] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -28,6 +30,34 @@ function Register() {
     "Commercial",
     "Medical Services",
   ];
+
+  const requestOtp = async () => {
+    try {
+      const { data } = await axios.post("http://localhost:4001/api/users/send-otp", { email });
+      toast.success(data.message || "OTP sent!");
+      setOtpSent(true);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to send OTP");
+    }
+  };
+
+  const validateOtp = async () => {
+    console.log("Sending OTP validation request:", { email, otp });  // Debugging log
+    try {
+      const { data } = await axios.post(
+        "http://localhost:4001/api/users/verify-otp",
+        { email, otp },
+        { withCredentials: true } // This is important to send cookies
+      );
+      
+      toast.success(data.message || "OTP validated successfully!");
+      setOtpValidated(true);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to validate OTP");
+      console.log("Error response:", error.response);  // Debugging log
+    }
+  };
+  
 
   const changePhotoHandler = (e) => {
     const file = e.target.files[0];
@@ -50,6 +80,11 @@ function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    if (!otpValidated) {
+      toast.error("Please validate your OTP first.");
+      return;
+    }
 
     if (!role) {
       toast.error("Please select a role.");
@@ -215,6 +250,38 @@ function Register() {
               accept="image/*"
             />
           </div>
+
+          {!otpValidated && (
+            <>
+              {!otpSent ? (
+                <button
+                  type="button"
+                  onClick={requestOtp}
+                  className="w-full p-2 bg-blue-500 rounded-md text-white"
+                >
+                  Send OTP
+                </button>
+              ) : (
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    placeholder="Enter OTP"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    className="w-full p-2 mb-4 border rounded-md"
+                  />
+                  <button
+                    type="button"
+                    onClick={validateOtp}
+                    className="w-full p-2 bg-green-500 hover:bg-green-700 duration-300 rounded-md text-white"
+                  >
+                    Validate OTP
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+
           <p className="text-center mb-4">
             Already registered?{" "}
             <Link to={"/login"} className="text-blue-600">
@@ -224,6 +291,7 @@ function Register() {
           <button
             type="submit"
             className="w-full p-2 bg-blue-500 hover:bg-blue-800 duration-300 rounded-md text-white"
+            disabled={!otpValidated}
           >
             Register
           </button>

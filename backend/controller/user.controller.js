@@ -2,6 +2,10 @@ import { User } from "../models/user.model.js";
 import { v2 as cloudinary } from "cloudinary";
 import bcrypt from "bcryptjs";
 import createTokenAndSaveCookies from "../jwt/AuthToken.js";
+import nodemailer from "nodemailer";
+
+// Temporary in-memory store for OTPs
+const otpStore = new Map();
 
 // Utility function to validate required fields
 const validateFields = (fields, body) => {
@@ -11,11 +15,31 @@ const validateFields = (fields, body) => {
   return null;
 };
 
-// Register a new user
+// Utility function to send OTP email
+export const sendOtpEmail = async (email, otp) => {
+  console.log(otp)
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: process.env.EMAIL, // Your email
+      pass: process.env.EMAIL_PASSWORD, // App password or email password
+    },
+  });
+
+  const mailOptions = {
+    from: `"RailMate Support" <${process.env.EMAIL}>`,
+    to: email,
+    subject: "Your RailMate OTP",
+    text: `Your OTP for registration is: ${otp}`,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
 // Register a new user
 export const register = async (req, res) => {
   try {
-    // Validate photo upload
+    // Step 1: Validate photo upload
     if (!req.files || !req.files.photo || !req.files.photo.tempFilePath) {
       return res.status(400).json({ message: "User photo is required" });
     }
@@ -26,21 +50,21 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "Invalid photo format" });
     }
 
-    // Validate required fields
-    const requiredFields = ["email", "name", "password", "phone", "gender", "role"];
+    // Step 2: Validate required fields
+    const requiredFields = ["email", "name", "password", "phone", "gender", "role", "otp"];
     const missingField = validateFields(requiredFields, req.body);
     if (missingField) {
       return res.status(400).json({ message: missingField });
     }
 
-    const { email, name, password, phone, gender, role, department } = req.body;
+    const { email, name, password, phone, gender, role, department, otp } = req.body;
 
-    // Ensure department is provided for admin role
+    // Step 3: Ensure department is provided for admin role
     if (role === "admin" && !department) {
       return res.status(400).json({ message: "Department is required for admin role" });
     }
 
-    // Check for email and department uniqueness for admin role
+    // Step 4: Check for email and department uniqueness for admin role
     if (role === "admin" && department) {
       const existingAdmin = await User.findOne({ department });
       if (existingAdmin) {
@@ -50,20 +74,27 @@ export const register = async (req, res) => {
       }
     }
 
-    // Check if the user already exists globally
+    // Step 5: Check if the user already exists globally
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists with this email" });
     }
 
-    // Upload photo to Cloudinary
+    // Step 6: Verify OTP
+    const storedOtp = otpStore.get(email);
+    if (!storedOtp || storedOtp !== otp) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+    otpStore.delete(email); // Clear OTP after successful validation
+
+    // Step 7: Upload photo to Cloudinary
     const cloudinaryResponse = await cloudinary.uploader.upload(photo.tempFilePath);
     if (!cloudinaryResponse || cloudinaryResponse.error) {
       console.error(cloudinaryResponse.error);
       return res.status(500).json({ message: "Failed to upload photo" });
     }
 
-    // Hash password and create new user
+    // Step 8: Hash password and create new user
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
       email,
@@ -81,7 +112,7 @@ export const register = async (req, res) => {
 
     await newUser.save();
 
-    // Create token and set cookie
+    // Step 9: Create token and set cookie
     const token = await createTokenAndSaveCookies(newUser._id, res);
     res.status(201).json({
       message: "User registered successfully",
@@ -102,6 +133,33 @@ export const register = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+// Step 0: Generate and send OTP
+export const generateOtp = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists with this email" });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // Generate 6-digit OTP
+    otpStore.set(email, otp);
+
+    await sendOtpEmail(email, otp);
+    res.status(200).json({ message: "OTP sent to your email" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to send OTP" });
+  }
+};
+
 
 
 // Login an existing user

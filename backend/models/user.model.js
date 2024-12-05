@@ -57,6 +57,8 @@ const userSchema = new mongoose.Schema({
     select: false,
     minlength: 8,
   },
+  otp: String, // Store OTP
+  otpExpires: Date, // Store OTP expiration time
   token: {
     type: String,
   },
