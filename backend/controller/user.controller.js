@@ -12,6 +12,7 @@ const validateFields = (fields, body) => {
 };
 
 // Register a new user
+// Register a new user
 export const register = async (req, res) => {
   try {
     // Validate photo upload
@@ -32,9 +33,24 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: missingField });
     }
 
-    const { email, name, password, phone, gender, role } = req.body;
+    const { email, name, password, phone, gender, role, department } = req.body;
 
-    // Check if user already exists
+    // Ensure department is provided for admin role
+    if (role === "admin" && !department) {
+      return res.status(400).json({ message: "Department is required for admin role" });
+    }
+
+    // Check for email and department uniqueness for admin role
+    if (role === "admin" && department) {
+      const existingAdmin = await User.findOne({ department });
+      if (existingAdmin) {
+        return res.status(400).json({
+          message: "An admin with this email is already registered for this department",
+        });
+      }
+    }
+
+    // Check if the user already exists globally
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists with this email" });
@@ -56,6 +72,7 @@ export const register = async (req, res) => {
       phone,
       gender,
       role,
+      department: role === "admin" ? department : undefined, // Set department only for admin role
       photo: {
         public_id: cloudinaryResponse.public_id,
         url: cloudinaryResponse.url,
@@ -73,14 +90,19 @@ export const register = async (req, res) => {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
+        department: newUser.department,
       },
       token: token,
     });
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "Duplicate entry detected", error });
+    }
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 // Login an existing user
 export const login = async (req, res) => {

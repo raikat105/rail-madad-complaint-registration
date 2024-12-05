@@ -17,6 +17,17 @@ function Register() {
   const [gender, setGender] = useState("");
   const [photo, setPhoto] = useState("");
   const [photoPreview, setPhotoPreview] = useState("");
+  const [department, setDepartment] = useState("");
+
+  const departments = [
+    "Passenger Service",
+    "Maintenance and Engineering",
+    "Safety and Security",
+    "Catering and Hospitality",
+    "Cleanliness",
+    "Commercial",
+    "Medical Services",
+  ];
 
   const changePhotoHandler = (e) => {
     const file = e.target.files[0];
@@ -45,6 +56,11 @@ function Register() {
       return;
     }
 
+    if (role === "admin" && !department) {
+      toast.error("Please select a department for the admin role.");
+      return;
+    }
+
     if (!gender) {
       toast.error("Please select a gender.");
       return;
@@ -69,6 +85,9 @@ function Register() {
     formData.append("role", role);
     formData.append("gender", gender);
     formData.append("photo", photo);
+    if (role === "admin") {
+      formData.append("department", department);
+    }
 
     try {
       const { data } = await axios.post(
@@ -82,7 +101,6 @@ function Register() {
         }
       );
 
-      console.log(data);
       toast.success(data.message || "User registered successfully");
       setProfile(data.user);
       setIsAuthenticated(true);
@@ -94,6 +112,7 @@ function Register() {
       setGender("");
       setPhoto("");
       setPhotoPreview("");
+      setDepartment("");
       navigateTo("/");
     } catch (error) {
       console.error("Registration Error:", error);
@@ -120,6 +139,20 @@ function Register() {
             <option value="user">User</option>
             <option value="admin">Admin</option>
           </select>
+          {role === "admin" && (
+            <select
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              className="w-full p-2 mb-4 border rounded-md"
+            >
+              <option value="">Select Department</option>
+              {departments.map((dept, index) => (
+                <option key={index} value={dept}>
+                  {dept}
+                </option>
+              ))}
+            </select>
+          )}
           <div className="mb-4">
             <input
               type="text"

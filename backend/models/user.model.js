@@ -36,6 +36,21 @@ const userSchema = new mongoose.Schema({
     required: true,
     enum: ["user", "admin"],
   },
+  department: {
+    type: String,
+    enum: [
+      "Passenger Service",
+      "Maintenance and Engineering",
+      "Safety and Security",
+      "Catering and Hospitality",
+      "Cleanliness",
+      "Commercial",
+      "Medical Services",
+    ],
+    required: function () {
+      return this.role === "admin"; // Required only if the role is admin
+    },
+  },
   password: {
     type: String,
     required: true,
@@ -50,4 +65,8 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+// Create a unique index for the combination of email and department
+userSchema.index({ email: 1, department: 1 }, { unique: true });
+
 export const User = mongoose.model("User", userSchema);
