@@ -7,6 +7,7 @@ const FeedbackForm = ({ userId }) => {
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [message, setMessage] = useState('');
+  const [sentiment, setSentiment] = useState('');
 
   // Fetch complaint details using userId when the component mounts
   useEffect(() => {
@@ -28,22 +29,14 @@ const FeedbackForm = ({ userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const feedbackData = {
-      userId,
-      complaintId,
-      description,
-      rating,
-      feedback
-    };
+    const feedbackData = { userId, complaintId, description, rating, feedback };
 
     try {
-      const response = await axios.post('http://localhost:4001/api/users/feedback', feedbackData);
-      if (response.status === 200) {
-        setMessage('Feedback submitted successfully!');
-        setRating(0);
-        setFeedback('');
-      }
+      const response = await axios.post('http://localhost:5000/feedback', feedbackData);
+      setMessage('Feedback submitted successfully!');
+      setSentiment(response.data.sentiment);
+      setRating(0);
+      setFeedback('');
     } catch (error) {
       setMessage('Failed to submit feedback. Please try again.');
     }
@@ -51,32 +44,12 @@ const FeedbackForm = ({ userId }) => {
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-4 text-center">Complaint Feedback Form</h2>
-      
+      <h2 className="text-2xl font-bold mb-4 text-center">Feedback Form</h2>
+
       {message && <p className="text-center text-green-600 mb-4">{message}</p>}
+      {sentiment && <p className="text-center text-blue-600 mb-4">Sentiment: {sentiment}</p>}
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="complaintId" className="block text-gray-700 font-bold mb-2">Complaint ID</label>
-          <input 
-            type="text" 
-            id="complaintId" 
-            value={complaintId} 
-            disabled 
-            className="w-full p-2 border border-gray-300 rounded bg-gray-100" 
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="description" className="block text-gray-700 font-bold mb-2">Complaint Description</label>
-          <textarea 
-            id="description" 
-            value={description} 
-            disabled 
-            className="w-full p-2 border border-gray-300 rounded bg-gray-100" 
-          ></textarea>
-        </div>
-
         <div className="mb-4">
           <label htmlFor="rating" className="block text-gray-700 font-bold mb-2">Rate the Settlement</label>
           <div className="flex">
@@ -94,7 +67,7 @@ const FeedbackForm = ({ userId }) => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="feedback" className="block text-gray-700 font-bold mb-2">Additional Feedback</label>
+          <label htmlFor="feedback" className="block text-gray-700 font-bold mb-2">Your Feedback</label>
           <textarea 
             id="feedback" 
             value={feedback} 

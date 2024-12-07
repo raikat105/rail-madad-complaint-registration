@@ -250,61 +250,23 @@ mongoose.connect(MONGO_URL, {
   })
   .then(() => console.log('MongoDB Connected'))
   .catch((err) => console.error('Error connecting to MongoDB:', err));
-
-
-
-const feedbackSchema = new mongoose.Schema({
-	userId: { type: String, required: true },
-	complaintId: { type: String, required: true },
-	description: { type: String, required: true },
-	rating: { type: Number, required: true },
-	feedback: { type: String, required: true },
-	date: { type: Date, default: Date.now }
-  });
   
-  const Feedback = mongoose.model('Feedback', feedbackSchema);
+  // Sentiment Analysis Function
+  const determineSentiment = (rating) => {
+	if (rating >= 4) return 'positive';
+	if (rating === 3) return 'neutral';
+	return 'negative';
+  };
   
-  // Route to get complaint details by userId
-  app.get('/complaint/:userId', async (req, res) => {
-	const { userId } = req.params;
+  // Feedback Submission Route
+  app.post('/api/feedback', async (req, res) => {
 	try {
-	  const complaint = await Complaint.findOne({ userId });
-	  if (!complaint) {
-		return res.status(404).json({ error: 'Complaint not found' });
-	  }
-	  res.json(complaint);
-	} catch (error) {
-	  res.status(500).json({ error: 'Failed to retrieve complaint details' });
-	}
-  });
-  
-  // Route to submit feedback
-  app.post('/feedback', async (req, res) => {
-	try {
-	  const newFeedback = new Feedback(req.body);
+	  const { userId, complaintId, description, rating, feedback } = req.body;
+	  const sentiment = determineSentiment(rating); // Determine sentiment
+	  const newFeedback = new Feedback({ userId, complaintId, description, rating, feedback, sentiment });
 	  await newFeedback.save();
-	  res.status(200).json({ message: 'Feedback submitted successfully' });
+	  res.status(200).json({ message: 'Feedback submitted successfully', sentiment });
 	} catch (error) {
 	  res.status(500).json({ error: 'Failed to submit feedback' });
 	}
   });
-
-    
-app.post("/feedback", async (req, res) => {
-	try {
-		console.log(req.body);
-		const { feedback } = req.body;
-		const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-		const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-		const prompt = "This is a RailMadad Complaint Resolution Feedback Model. The feedback " + feedback + " has been entered by the user. Classify it as Positive, Negative or Neutral. Reply only one of the three things.";
-
-		const result = await model.generateContent(prompt);
-		console.log(result.response.text());
-	} catch (error) {
-		console.error("Error occurred:", error.message);
-	  	res.status(500).json({ error: "Internal Server Error", text: error.message });
-	}
-})
