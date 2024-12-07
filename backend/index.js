@@ -11,6 +11,7 @@ import OpenAI from "openai";
 import multer from "multer";
 import bodyParser from "body-parser";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import {Feedback} from "./models/Feedback.model.js";
 
 const upload = multer();
 
@@ -263,22 +264,21 @@ const determineSentiment = (rating) => {
 // Feedback Submission Route
 app.post("/api/feedback", async (req, res) => {
 	try {
-		const { userId, complaintId, description, rating, feedback } = req.body;
-		const sentiment = determineSentiment(rating); // Determine sentiment
+		console.log(req.body)
+		const { rating, feedback, sentiment } = req.body;
 		const newFeedback = new Feedback({
-			userId,
-			complaintId,
-			description,
 			rating,
 			feedback,
 			sentiment,
 		});
+
+		console.log("Feedback to save:", newFeedback);
 		await newFeedback.save();
 		res
 			.status(200)
 			.json({ message: "Feedback submitted successfully", sentiment });
 	} catch (error) {
-		res.status(500).json({ error: "Failed to submit feedback" });
+		res.status(400).json({ error: "Failed to submit feedback" });
 	}
 });
 

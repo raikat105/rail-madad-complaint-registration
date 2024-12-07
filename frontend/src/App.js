@@ -13,7 +13,7 @@ import Contact from "./Home/Contact";
 import Form from "./Home/Form";
 import Home from "./Home/Home";
 import ComplaintStatusPage from "./Home/ComplaintStatusPage";
-import FeedbackForm from "./Home/FeedbackForm";
+import Feedback from "./Home/Feedback";
 
 function App() {
   const location = useLocation();
@@ -48,7 +48,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<><Body /> <Dashboard /></>} />
         <Route path="/contact" element={<><Body /> <Contact /></>} />
-        <Route path="/feed" element={<><FeedbackForm /> <Body /></>} />
+        <Route path="/feed" element={<><Feedback /> <Body /></>} />
         <Route path="/complaints" element={<><Body /> <Form /></>} />
         <Route path="/current-complaint-status" element={<><Body /><ComplaintStatusPage /></>} />
         <Route path="*" element={<div>Page Not Found</div>} />
