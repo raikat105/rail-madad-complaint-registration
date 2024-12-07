@@ -302,7 +302,7 @@ app.post("/sentiment", async (req, res) => {
 
 		const result = await model.generateContent(prompt);
 		console.log(result.response.text());
-		res.json({text: result.response.text()})
+		res.json({text: result.response.text()});
 	} catch (error) {
 		console.error("Error occurred:", error.message);
 	  	res.status(500).json({ error: "Internal Server Error", text: error.message });
