@@ -299,7 +299,7 @@ app.post("/feedback", async (req, res) => {
 		const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-		const prompt = "Explain how AI works";
+		const prompt = "This is a RailMadad Complaint Resolution Feedback Model. The feedback " + feedback + " has been entered by the user. Classify it as Positive, Negative or Neutral. Reply only one of the three things.";
 
 		const result = await model.generateContent(prompt);
 		console.log(result.response.text());
