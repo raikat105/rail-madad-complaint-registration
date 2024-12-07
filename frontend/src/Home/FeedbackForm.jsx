@@ -44,20 +44,41 @@ const FeedbackForm = ({ userId }) => {
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-4 text-center">Feedback Form</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center">Complaint Feedback Form</h2>
 
       {message && <p className="text-center text-green-600 mb-4">{message}</p>}
       {sentiment && <p className="text-center text-blue-600 mb-4">Sentiment: {sentiment}</p>}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
+          <label htmlFor="complaintId" className="block text-gray-700 font-bold mb-2">Complaint ID</label>
+          <input
+            type="text"
+            id="complaintId"
+            value={complaintId}
+            disabled
+            className="w-full p-2 border border-gray-300 rounded bg-gray-100"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="description" className="block text-gray-700 font-bold mb-2">Complaint Description</label>
+          <textarea
+            id="description"
+            value={description}
+            disabled
+            className="w-full p-2 border border-gray-300 rounded bg-gray-100"
+          ></textarea>
+        </div>
+
+        <div className="mb-4">
           <label htmlFor="rating" className="block text-gray-700 font-bold mb-2">Rate the Settlement</label>
           <div className="flex">
             {[1, 2, 3, 4, 5].map((star) => (
-              <button 
-                type="button" 
-                key={star} 
-                onClick={() => setRating(star)} 
+              <button
+                type="button"
+                key={star}
+                onClick={() => setRating(star)}
                 className={`w-10 h-10 text-2xl ${rating >= star ? 'text-yellow-500' : 'text-gray-400'}`}
               >
                 ★
@@ -68,17 +89,17 @@ const FeedbackForm = ({ userId }) => {
 
         <div className="mb-4">
           <label htmlFor="feedback" className="block text-gray-700 font-bold mb-2">Your Feedback</label>
-          <textarea 
-            id="feedback" 
-            value={feedback} 
-            onChange={(e) => setFeedback(e.target.value)} 
-            required 
-            className="w-full p-2 border border-gray-300 rounded" 
+          <textarea
+            id="feedback"
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+            required
+            className="w-full p-2 border border-gray-300 rounded"
           ></textarea>
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
         >
           Submit Feedback
