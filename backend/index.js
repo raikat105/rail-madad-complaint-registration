@@ -269,4 +269,28 @@ mongoose.connect(MONGO_URL, {
 	} catch (error) {
 	  res.status(500).json({ error: 'Failed to submit feedback' });
 	}
+<<<<<<< HEAD
   });
+=======
+  });
+
+    
+app.post("/sentiment", async (req, res) => {
+	try {
+		console.log(req.body);
+		const { feedback } = req.body;
+
+		const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+		const prompt = "This is a RailMadad Complaint Resolution Feedback Model. The feedback " + feedback + " has been entered by the user. Classify it as Positive, Negative or Neutral. Reply only one of the three things.";
+
+		const result = await model.generateContent(prompt);
+		console.log(result.response.text());
+		res.json({text: result.response.text()})
+	} catch (error) {
+		console.error("Error occurred:", error.message);
+	  	res.status(500).json({ error: "Internal Server Error", text: error.message });
+	}
+})
+>>>>>>> 118c6d0234275e240ae17abba316ce1f6fcdb28f
