@@ -239,3 +239,45 @@ app.post("/chat", async (req, res) => {
 	  res.status(500).json({ error: "Internal Server Error", text: error.message });
 	}
   });
+
+
+
+
+
+
+//   Feed API 
+const feedbackSchema = new mongoose.Schema({
+	userId: { type: String, required: true },
+	complaintId: { type: String, required: true },
+	description: { type: String, required: true },
+	rating: { type: Number, required: true },
+	feedback: { type: String, required: true },
+	date: { type: Date, default: Date.now }
+  });
+  
+  const Feedback = mongoose.model('Feedback', feedbackSchema);
+  
+  // Route to get complaint details by userId
+  app.get('/complaint/:userId', async (req, res) => {
+	const { userId } = req.params;
+	try {
+	  const complaint = await Complaint.findOne({ userId });
+	  if (!complaint) {
+		return res.status(404).json({ error: 'Complaint not found' });
+	  }
+	  res.json(complaint);
+	} catch (error) {
+	  res.status(500).json({ error: 'Failed to retrieve complaint details' });
+	}
+  });
+  
+  // Route to submit feedback
+  app.post('/feedback', async (req, res) => {
+	try {
+	  const newFeedback = new Feedback(req.body);
+	  await newFeedback.save();
+	  res.status(200).json({ message: 'Feedback submitted successfully' });
+	} catch (error) {
+	  res.status(500).json({ error: 'Failed to submit feedback' });
+	}
+  });
