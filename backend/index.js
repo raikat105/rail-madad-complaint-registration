@@ -243,6 +243,16 @@ app.post("/chat", async (req, res) => {
 
 
 //   Feed API 
+
+mongoose.connect(MONGO_URL, { 
+	useNewUrlParser: true, 
+	useUnifiedTopology: true 
+  })
+  .then(() => console.log('MongoDB Connected'))
+  .catch((err) => console.error('Error connecting to MongoDB:', err));
+
+
+
 const feedbackSchema = new mongoose.Schema({
 	userId: { type: String, required: true },
 	complaintId: { type: String, required: true },
