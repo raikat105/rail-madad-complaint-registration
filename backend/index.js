@@ -10,6 +10,7 @@ import https from "https";
 import OpenAI from "openai";
 import multer from "multer";
 import bodyParser from "body-parser";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const upload = multer();
 
@@ -241,10 +242,6 @@ app.post("/chat", async (req, res) => {
   });
 
 
-
-
-
-
 //   Feed API 
 const feedbackSchema = new mongoose.Schema({
 	userId: { type: String, required: true },
@@ -281,3 +278,23 @@ const feedbackSchema = new mongoose.Schema({
 	  res.status(500).json({ error: 'Failed to submit feedback' });
 	}
   });
+
+    
+app.post("/feedback", async (req, res) => {
+	try {
+		console.log(req.body);
+		const { feedback } = req.body;
+		const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+		const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+		const prompt = "Explain how AI works";
+
+		const result = await model.generateContent(prompt);
+		console.log(result.response.text());
+	} catch (error) {
+		console.error("Error occurred:", error.message);
+	  	res.status(500).json({ error: "Internal Server Error", text: error.message });
+	}
+})
