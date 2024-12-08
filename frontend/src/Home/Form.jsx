@@ -67,7 +67,7 @@ const Form = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     try {
       const complaintData = {
         userId: profile?.user._id,
@@ -77,7 +77,7 @@ const Form = () => {
         complaintSubType: formData.complaintSubType,
         description: formData.description,
       };
-
+  
       const uploadedFiles = {};
       if (files.image) {
         uploadedFiles.imageUrl = await uploadToCloudinary(files.image, "image");
@@ -88,28 +88,9 @@ const Form = () => {
       if (files.video) {
         uploadedFiles.videoUrl = await uploadToCloudinary(files.video, "video");
       }
-
+  
       const completeComplaintData = { ...complaintData, ...uploadedFiles };
-
-      try {
-        const response = await fetch("http://127.0.0.1:5000/upload", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(completeComplaintData),
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          console.log("Server response:", result);
-        } else {
-          console.error("Failed to send data to the server.");
-        }
-      } catch (error) {
-        console.error("Error sending data:", error);
-      }
-
+  
       const response = await axios.post(
         "http://localhost:4001/api/complaint/create",
         completeComplaintData,
@@ -119,10 +100,27 @@ const Form = () => {
           },
         }
       );
-
-      setComplaintId(response.data.complaint.complaintId);
+  
+      const { complaintId } = response.data.complaint;
+      setComplaintId(complaintId);
       setIsModalOpen(true);
-      console.log("Response:", response.data);
+  
+      // Send email after successful complaint submission
+      await fetch("http://localhost:4001/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: profile?.user.email, // User's email from profile
+          complaintId,
+          description: formData.description,
+          phoneNumber: formData.phoneNumber,
+          pnrNumber: formData.pnrNumber,
+        }),
+      });
+  
+      console.log("Complaint submitted and email sent successfully!");
     } catch (error) {
       console.error("Error submitting complaint:", error);
       alert("Failed to submit complaint. Please try again.");

@@ -12,6 +12,7 @@ import multer from "multer";
 import bodyParser from "body-parser";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import {Feedback} from "./models/Feedback.model.js";
+import {sendEmail} from "./middleware/emailService.js"
 
 const upload = multer();
 
@@ -305,3 +306,38 @@ app.post("/sentiment", async (req, res) => {
 			.json({ error: "Internal Server Error", text: error.message });
 	}
 });
+
+
+
+
+// Email 
+
+app.post("/api/send-email", async (req, res) => {
+	const { email, complaintId, description, phoneNumber, pnrNumber } = req.body;
+  
+	// Compose the email content
+	const emailText = `
+	  Dear User,
+  
+	  Your complaint has been successfully submitted with the following details:
+  
+	  Complaint ID: ${complaintId}
+	  Phone Number: ${phoneNumber}
+	  PNR Number: ${pnrNumber}
+	  Description: ${description}
+  
+	  Please save your Complaint ID for future reference.
+  
+	  Regards,
+	  Support Team
+	`;
+  
+	try {
+	  await sendEmail(email, "Complaint Submission Confirmation", emailText);
+	  console.log("HEEEEEEEEEEEEELlllllllllllllooooooooooooooo")
+	  res.status(200).send({ message: "Email sent successfully!" });
+	} catch (error) {
+	  res.status(500).send({ message: "Failed to send email.", error });
+	}
+  });
+  
