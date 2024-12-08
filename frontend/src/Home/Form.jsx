@@ -90,6 +90,15 @@ const Form = () => {
       }
   
       const completeComplaintData = { ...complaintData, ...uploadedFiles };
+
+      const PNRDetails = await axios.post(`http://localhost:4001/getPnrDetails?pnr=${formData.pnrNumber}`)
+
+      const apiComplaintData = {
+        description: formData.description,
+        ...uploadedFiles,
+        pnrNumber: formData.pnrNumber,
+        ...PNRDetails,
+      }
   
       const response = await axios.post(
         "http://localhost:4001/api/complaint/create",

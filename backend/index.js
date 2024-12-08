@@ -11,8 +11,8 @@ import OpenAI from "openai";
 import multer from "multer";
 import bodyParser from "body-parser";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import {Feedback} from "./models/Feedback.model.js";
-import {sendEmail} from "./middleware/emailService.js"
+import { Feedback } from "./models/Feedback.model.js";
+import { sendEmail } from "./middleware/emailService.js";
 
 const upload = multer();
 
@@ -265,7 +265,7 @@ const determineSentiment = (rating) => {
 // Feedback Submission Route
 app.post("/api/feedback", async (req, res) => {
 	try {
-		console.log(req.body)
+		console.log(req.body);
 		const { rating, feedback, sentiment } = req.body;
 		const newFeedback = new Feedback({
 			rating,
@@ -307,14 +307,11 @@ app.post("/sentiment", async (req, res) => {
 	}
 });
 
-
-
-
-// Email 
+// Email
 
 app.post("/api/send-email", async (req, res) => {
 	const { email, complaintId, description, phoneNumber, pnrNumber } = req.body;
-  
+
 	// Compose the email content
 	const emailText = `
 	  Dear User,
@@ -331,13 +328,45 @@ app.post("/api/send-email", async (req, res) => {
 	  Regards,
 	  Support Team
 	`;
-  
+
 	try {
-	  await sendEmail(email, "Complaint Submission Confirmation", emailText);
-	  console.log("HEEEEEEEEEEEEELlllllllllllllooooooooooooooo")
-	  res.status(200).send({ message: "Email sent successfully!" });
+		await sendEmail(email, "Complaint Submission Confirmation", emailText);
+		console.log("HEEEEEEEEEEEEELlllllllllllllooooooooooooooo");
+		res.status(200).send({ message: "Email sent successfully!" });
 	} catch (error) {
-	  res.status(500).send({ message: "Failed to send email.", error });
+		res.status(500).send({ message: "Failed to send email.", error });
 	}
-  });
-  
+});
+
+const pnrDatabase = {
+	1234567890: { trainNumber: "12345", coachNumber: "S1", seatNumber: "23" },
+	9876543210: { trainNumber: "54321", coachNumber: "A1", seatNumber: "12" },
+	1122334455: { trainNumber: "67890", coachNumber: "B2", seatNumber: "34" },
+	2233445566: { trainNumber: "23456", coachNumber: "C3", seatNumber: "7" },
+	3344556677: { trainNumber: "34567", coachNumber: "D4", seatNumber: "15" },
+	4455667788: { trainNumber: "45678", coachNumber: "S2", seatNumber: "29" },
+	5566778899: { trainNumber: "56789", coachNumber: "B1", seatNumber: "10" },
+	6677889900: { trainNumber: "67891", coachNumber: "E5", seatNumber: "5" },
+	7788990011: { trainNumber: "78901", coachNumber: "F6", seatNumber: "8" },
+	8899001122: { trainNumber: "89012", coachNumber: "G7", seatNumber: "3" },
+};
+
+
+// API route to fetch PNR details
+// API route to fetch PNR details
+app.get("/getPnrDetails", (req, res) => {
+	const pnr = req.query.pnr;
+
+	if (!pnr) {
+		return res.status(400).json({ error: "PNR not provided" });
+	}
+
+	const details = pnrDatabase[pnr];
+
+	if (!details) {
+		return res.status(404).json({ error: "PNR not found" });
+	}
+
+	res.json(details); // The response now includes trainNumber, coachNumber, and seatNumber
+});
+
