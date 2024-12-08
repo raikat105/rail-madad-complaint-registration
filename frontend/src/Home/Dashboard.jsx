@@ -17,10 +17,10 @@ const Dashboard = () => {
         <nav className="menu">
           <ul>
             <li>
-              <a href="/profile">Your Profile</a>
+              <Link to="/profile">Your Profile</Link>
             </li>
             <li>
-              <a href="/complaint-history">Complaint History</a>
+              <Link to="/complaint-history">Complaint History</Link>
             </li>
             <li>
               <Link to="/current-complaint-status">Current Complaint Status</Link>

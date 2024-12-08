@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Modal from "react-modal";
 import "./Form.css";
+import { useAuth } from "../context/AuthProvider";
 
 const Form = () => {
   const [audioRecording, setAudioRecording] = useState(false);
@@ -19,6 +20,7 @@ const Form = () => {
     video: null,
     audio: null,
   });
+  const { profile } = useAuth();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -68,6 +70,7 @@ const Form = () => {
 
     try {
       const complaintData = {
+        userId: profile?.user._id,
         phoneNumber: formData.phoneNumber,
         pnrNumber: formData.pnrNumber,
         complaintType: formData.complaintType,

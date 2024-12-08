@@ -1,0 +1,64 @@
+/* Styles for the HistoryTab component */
+.history-tab {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f9f9f9;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .history-tab h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .complaints-list {
+    margin-top: 20px;
+  }
+  
+  .complaint-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .complaint-item h3 {
+    margin: 0;
+    color: #007bff;
+  }
+  
+  .complaint-item p {
+    margin: 8px 0;
+    color: #555;
+  }
+  
+  .complaint-item p strong {
+    color: #333;
+  }
+  
+  .error {
+    color: red;
+    text-align: center;
+  }
+  
+  a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Loader and No Complaints message */
+  p {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+  }
+  

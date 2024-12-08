@@ -3,8 +3,7 @@ import mongoose from "mongoose";
 const complaintSchema = new mongoose.Schema({
   userId: {
     type: String,
-    required: false,
-    ref: "User",
+    required: true,
   },
   complaintId: {
     type: String,

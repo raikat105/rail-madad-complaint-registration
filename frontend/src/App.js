@@ -14,6 +14,7 @@ import Form from "./Home/Form";
 import Home from "./Home/Home";
 import ComplaintStatusPage from "./Home/ComplaintStatusPage";
 import Feedback from "./Home/Feedback";
+import HistoryTab from "./Home/HistoryTab";
 
 function App() {
   const location = useLocation();
@@ -51,7 +52,9 @@ function App() {
         <Route path="/feed" element={<><Feedback /> <Body /></>} />
         <Route path="/complaints" element={<><Body /> <Form /></>} />
         <Route path="/current-complaint-status" element={<><Body /><ComplaintStatusPage /></>} />
+        <Route path="/complaint-history" element={<><Body /><HistoryTab /></>} />
         <Route path="*" element={<div>Page Not Found</div>} />
+
       </Routes>
       <Toaster />
       {/* {!hideNavbarFooter && <Footer />} */}

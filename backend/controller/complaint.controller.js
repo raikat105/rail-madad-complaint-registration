@@ -15,6 +15,7 @@ export const createComplaint = async (req, res) => {
 		console.log(req.body)
 		// Validate required fields
 		const requiredFields = [
+			"userId",
 			"phoneNumber",
 			"pnrNumber",
 			"complaintSubType",
@@ -27,6 +28,7 @@ export const createComplaint = async (req, res) => {
 		}
 
 		const {
+			userId,
 			pnrNumber,
 			phoneNumber,
 			description,
@@ -40,8 +42,8 @@ export const createComplaint = async (req, res) => {
 		const complaintId = phoneNumber + d.getTime();
 
 		// Create a new complaint
-		const complaint = new Complaint({
-			//userId: req.user._id, 
+		const complaint = new Complaint({ 
+			userId,
 			complaintId,
 			phoneNumber,
 			pnrNumber,
@@ -68,7 +70,9 @@ export const createComplaint = async (req, res) => {
 // Get all complaints of the logged-in user
 export const getMyComplaints = async (req, res) => {
 	try {
-		const complaints = await Complaint.find({ userId: req.user._id });
+		console.log(req.query)
+		const {userId} = req.query
+		const complaints = await Complaint.find({ userId: userId });
 		res.status(200).json({ complaints });
 	} catch (error) {
 		console.error(error);

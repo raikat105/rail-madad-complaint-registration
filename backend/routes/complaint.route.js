@@ -24,7 +24,7 @@ router.post(
 	//isAuthenticated,
 	createComplaint
 );
-router.get("/history", isAuthenticated, getMyComplaints);
+router.get("/history", getMyComplaints);
 router.get("/complaint-status", validateComplaintExists, getComplaintById);
 router.put(
 	"/:id",
