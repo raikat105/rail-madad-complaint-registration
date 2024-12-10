@@ -13,6 +13,7 @@ import bodyParser from "body-parser";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Feedback } from "./models/Feedback.model.js";
 import { sendEmail } from "./middleware/emailService.js";
+import Groq from "groq-sdk/index.mjs";
 
 const upload = multer();
 
@@ -203,47 +204,48 @@ app.post("/train-status", (req, res) => {
 upload.none();
 
 app.post("/chat", async (req, res) => {
-	try {
-		// Log the incoming request body
+    try {
+        // Initialize the GoogleGenerativeAI class with the API key
 		console.log(req.body);
+		const openai = new OpenAI({
+			apiKey: "xai-CNNloo5h3hopo69hEZcasNFaK6aLuLe7bZIkvoV4jOvEi5e7nxGKbdOwzvZ7B8w1F6mirXrnuil2IQbY",
+			baseURL: "https://api.x.ai/v1",
+		  });
 
-		const { text, chatHistory } = req.body;
+        const { text, chatHistory } = req.body;
 
-		const openai = new OpenAI({ apiKey: process.env.API_KEY });
-		if (!process.env.API_KEY) {
-			throw new Error("API_KEY is missing. Check your environment variables.");
-		}
+        if (!process.env.GROK_API_KEY) {
+            throw new Error("API_KEY is missing. Check your environment variables.");
+        }
 
-		// Construct the prompt
-		const prompt =
-			"You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. The chat history of the user and your chatbot is: \n" +
-			chatHistory +
-			"\nAnd now their new query or line is: " +
-			text +
-			"\nAnswer accordingly, just like a station helpline would do. Keep it brief and simple. And your answer shouldn't start with 'Chatbot:'. It should be normal.";
+        // Construct the prompt
+        const prompt =
+            "You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. \nAnswer accordingly, just like a station helpline would do. Keep it brief and simple. And your answer shouldn't start with 'Chatbot:'. It should be normal. Give a brief and minimilistic reply. Dont answer to anything that is not related to Railways. The chat history of the user and your chatbot is: \n" +
+            chatHistory;
 
-		// Call OpenAI's API
-		const response = await openai.chat.completions.create({
-			model: "gpt-4", // Use the correct model name
+        // Call the Gemini model to generate the response
+		const completion = await openai.chat.completions.create({
+			model: "grok-beta",
 			messages: [
-				{
-					role: "user",
-					content: prompt,
-				},
+			  { role: "system", content: prompt },
+			  {
+				role: "user",
+				content: text,
+			  },
 			],
-		});
+		  });
+        //const result = await model.generateContent(prompt);
+        console.log(completion.choices[0].message);
 
-		// Log and send the response
-		console.log(response.choices[0].message);
-		res.json({ text: response.choices[0].message.content });
-	} catch (error) {
-		// Log and send errors
-		console.error("Error occurred:", error.message);
-		res
-			.status(500)
-			.json({ error: "Internal Server Error", text: error.message });
-	}
+        // Send the response back
+        res.json({ text: completion.choices[0].message.content });
+    } catch (error) {
+        console.error("Error occurred:", error.message);
+        res.status(500).json({ error: "Internal Server Error", text: error.message });
+    }
 });
+
+
 
 //   Feed API
 
@@ -331,7 +333,6 @@ app.post("/api/send-email", async (req, res) => {
 
 	try {
 		await sendEmail(email, "Complaint Submission Confirmation", emailText);
-		console.log("HEEEEEEEEEEEEELlllllllllllllooooooooooooooo");
 		res.status(200).send({ message: "Email sent successfully!" });
 	} catch (error) {
 		res.status(500).send({ message: "Failed to send email.", error });
