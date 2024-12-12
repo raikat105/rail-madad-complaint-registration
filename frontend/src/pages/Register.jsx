@@ -22,13 +22,21 @@ function Register() {
   const [department, setDepartment] = useState("");
 
   const departments = [
-    "Passenger Service",
-    "Maintenance and Engineering",
-    "Safety and Security",
-    "Catering and Hospitality",
-    "Cleanliness",
-    "Commercial",
-    "Medical Services",
+    "PassengerSafety",
+    "OperationalImpact",
+    "HygieneAndCleanliness",
+    "PassengerComfort",
+    "TicketingAndReservation",
+    "GrievancesAgainstStaff",
+    "DepartmentsResponsibleForAddressingIssues",
+    "Operations",
+    "Engineering",
+    "ElectricalAndMechanicalMaintenance",
+    "HygieneAndSanitation",
+    "CommercialServices",
+    "SignalingAndCommunication",
+    "GrievanceRedressal",
+    "CateringAndOnboardServices",
   ];
 
   const requestOtp = async () => {

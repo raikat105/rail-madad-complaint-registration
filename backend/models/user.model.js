@@ -39,13 +39,21 @@ const userSchema = new mongoose.Schema({
   department: {
     type: String,
     enum: [
-      "Passenger Service",
-      "Maintenance and Engineering",
-      "Safety and Security",
-      "Catering and Hospitality",
-      "Cleanliness",
-      "Commercial",
-      "Medical Services",
+      "PassengerSafety",
+      "OperationalImpact",
+      "HygieneAndCleanliness",
+      "PassengerComfort",
+      "TicketingAndReservation",
+      "GrievancesAgainstStaff",
+      "DepartmentsResponsibleForAddressingIssues",
+      "Operations",
+      "Engineering",
+      "ElectricalAndMechanicalMaintenance",
+      "HygieneAndSanitation",
+      "CommercialServices",
+      "SignalingAndCommunication",
+      "GrievanceRedressal",
+      "CateringAndOnboardServices",
     ],
     required: function () {
       return this.role === "admin"; // Required only if the role is admin
