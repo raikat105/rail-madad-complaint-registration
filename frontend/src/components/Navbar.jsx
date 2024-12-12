@@ -53,7 +53,7 @@ const Navbar = () => {
                 </div>
               </li>
               <li className="nav-item">
-                <Link to="/feed">Feed</Link>
+                <Link to="/feed">Feedback</Link>
                 <div className="dropdown-box">
                   <p>View the latest updates!</p>
                 </div>
@@ -82,7 +82,7 @@ const Navbar = () => {
       <div className="hidden md:flex space-x-2">
         {isAuthenticated && profile?.user?.role === "admin" ? (
           <Link
-            to="/dashboard"
+            to="/admin-dashboard"
             className="bg-blue-600 text-white font-semibold hover:bg-blue-800 duration-300 px-4 py-2 rounded"
           >
             DASHBOARD
