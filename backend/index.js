@@ -212,6 +212,148 @@ app.post("/chat", async (req, res) => {
 			baseURL: "https://api.x.ai/v1",
 		  });
 
+		  const promptRuleSet = {
+			PassengerSafety: {
+			  Immediate: [
+				"Accidents",
+				"Fires",
+				"Derailments",
+				"Any situation that endangers lives"
+			  ],
+			  Later: [
+				"Potential safety hazards (e.g., cracked seats, missing emergency instructions)"
+			  ]
+			},
+			OperationalImpact: {
+			  Immediate: [
+				"Signal failures",
+				"Train delays",
+				"Disruption of services that affect schedules or passenger journeys"
+			  ],
+			  Later: [
+				"Minor delays",
+				"Grievances about operational inefficiencies"
+			  ]
+			},
+			HygieneAndCleanliness: {
+			  Immediate: [
+				"Overflowing toilets",
+				"Pest infestations",
+				"Unhygienic pantry conditions leading to health risks"
+			  ],
+			  Later: [
+				"General untidiness",
+				"Sporadic lapses in cleaning"
+			  ]
+			},
+			PassengerComfort: {
+			  Immediate: [
+				"Broken air-conditioning",
+				"Broken heating",
+				"Lighting issues in reserved compartments"
+			  ],
+			  Later: [
+				"Seat discomfort",
+				"Minor noise disturbances",
+				"Availability of blankets in AC coaches"
+			  ]
+			},
+			TicketingAndReservation: {
+			  Immediate: [
+				"Duplicate seat allocations",
+				"E-ticket failures",
+				"Critical booking errors"
+			  ],
+			  Later: [
+				"Complaints about pricing",
+				"Waitlist updates"
+			  ]
+			},
+			GrievancesAgainstStaff: {
+			  Immediate: [
+				"Harassment",
+				"Abuse",
+				"Misconduct by railway staff"
+			  ],
+			  Later: [
+				"Rudeness",
+				"Inefficiency not posing immediate harm"
+			  ]
+			},
+			DepartmentsResponsibleForAddressingIssues: {
+			  Safety: {
+				Departments: [
+				  "Railway Protection Force (RPF)",
+				  "Safety Directorate"
+				],
+				Responsibilities: [
+				  "Ensuring passenger safety",
+				  "Investigating incidents",
+				  "Responding to emergencies"
+				]
+			  },
+			  Operations: {
+				Departments: ["Operations Department"],
+				Responsibilities: [
+				  "Managing train schedules",
+				  "Signal systems",
+				  "Traffic coordination"
+				]
+			  },
+			  Engineering: {
+				Departments: ["Civil Engineering Department"],
+				Responsibilities: [
+				  "Maintenance of tracks",
+				  "Maintenance of bridges",
+				  "Maintenance of station infrastructure"
+				]
+			  },
+			  ElectricalAndMechanicalMaintenance: {
+				Departments: ["Electrical and Mechanical Engineering Department"],
+				Responsibilities: [
+				  "Upkeep of train equipment (air-conditioning, lighting, engines)"
+				]
+			  },
+			  HygieneAndSanitation: {
+				Departments: ["Environment & Housekeeping Management (E&HM)"],
+				Responsibilities: [
+				  "Cleaning of coaches",
+				  "Cleaning of platforms",
+				  "Cleaning of stations"
+				]
+			  },
+			  CommercialServices: {
+				Departments: ["Commercial Department"],
+				Responsibilities: [
+				  "Addressing ticketing issues",
+				  "Passenger amenities",
+				  "Catering complaints"
+				]
+			  },
+			  SignalingAndCommunication: {
+				Departments: ["Signal and Telecommunications Department"],
+				Responsibilities: [
+				  "Maintenance of signaling equipment",
+				  "Wi-Fi services",
+				  "Communication systems"
+				]
+			  },
+			  GrievanceRedressal: {
+				Departments: ["Public Grievance Department"],
+				Responsibilities: [
+				  "Centralized handling of passenger complaints via RailMadad or helpline services"
+				]
+			  },
+			  CateringAndOnboardServices: {
+				Departments: ["Indian Railway Catering and Tourism Corporation (IRCTC)"],
+				Responsibilities: [
+				  "Handling food and beverage-related complaints"
+				]
+			  }
+			}
+		  };
+		  
+
         const { text, chatHistory } = req.body;
 
         if (!process.env.GROK_API_KEY) {
@@ -221,7 +363,7 @@ app.post("/chat", async (req, res) => {
         // Construct the prompt
         const prompt =
             "You are the helpline of the IRCTC of Indian Railways and you are sitting behind RailMadad platform to help and assist people through a chatbot. You have to help them accordingly and give valid solutions to their problems just like a railway helpline would give. \nAnswer accordingly, just like a station helpline would do. Keep it brief and simple. And your answer shouldn't start with 'Chatbot:'. It should be normal. Give a brief and minimilistic reply. Dont answer to anything that is not related to Railways. The chat history of the user and your chatbot is: \n" +
-            chatHistory;
+            chatHistory + "You have to categorize the complaint given by users into their relevant departmant from the set of rules provided below : /n" + promptRuleSet + "Also show the priority and get the PNR details of the user if not mentioned. Now, print the entire thing together in key fields like 'Complaint', 'Complaint Type', 'Department', 'Priority', 'PNR', 'Train Details' (if given). ask everything and then display the fields please.";
 
         // Call the Gemini model to generate the response
 		const completion = await openai.chat.completions.create({
@@ -235,7 +377,7 @@ app.post("/chat", async (req, res) => {
 			],
 		  });
         //const result = await model.generateContent(prompt);
-        console.log(completion.choices[0].message);
+        console.log(completion.choices[0].message)
 
         // Send the response back
         res.json({ text: completion.choices[0].message.content });

@@ -45,26 +45,26 @@ const HistoryTab = () => {
           {complaints.map((complaint) => (
             <div key={complaint.complaintId} className="complaint-item">
               <h3>Complaint ID: {complaint.complaintId}</h3>
-              <p><strong>PNR Number:</strong> {complaint.pnrNumber}</p>
-              <p><strong>Phone Number:</strong> {complaint.phoneNumber}</p>
-              <p><strong>Type:</strong> {complaint.complaintType}</p>
-              <p><strong>Sub-Type:</strong> {complaint.complaintSubType}</p>
-              <p><strong>Description:</strong> {complaint.description}</p>
+              <p className="bc"><strong>PNR Number:</strong> {complaint.pnrNumber}</p>
+              <p className="bc"><strong>Phone Number:</strong> {complaint.phoneNumber}</p>
+              <p className="bc"><strong>Type:</strong> {complaint.complaintType}</p>
+              <p className="bc"><strong>Sub-Type:</strong> {complaint.complaintSubType}</p>
+              <p className="bc"><strong>Description:</strong> {complaint.description}</p>
 
               {complaint.image && (
-                <p>
+                <p className="bc">
                   <strong>Image:</strong> <a href={complaint.image} target="_blank" rel="noopener noreferrer">View</a>
                 </p>
               )}
 
               {complaint.audio && (
-                <p>
+                <p className="bc">
                   <strong>Audio:</strong> <a href={complaint.audio} target="_blank" rel="noopener noreferrer">Listen</a>
                 </p>
               )}
 
               {complaint.video && (
-                <p>
+                <p className="bc">
                   <strong>Video:</strong> <a href={complaint.video} target="_blank" rel="noopener noreferrer">Watch</a>
                 </p>
               )}
