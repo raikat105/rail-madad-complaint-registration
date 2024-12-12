@@ -88,21 +88,29 @@ const Form = () => {
       if (files.video) {
         uploadedFiles.videoUrl = await uploadToCloudinary(files.video, "video");
       }
+
+      const response = await axios.post(
+        "https://fb4b-34-125-185-46.ngrok-free.app/submit",
+        uploadedFiles,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          },
+        }
+      );
+
+      console.log(response.data.classifier)
   
       const completeComplaintData = { ...complaintData, ...uploadedFiles };
 
-      const PNRDetails = await axios.post(`http://localhost:4001/getPnrDetails?pnr=${formData.pnrNumber}`)
-
       const apiComplaintData = {
-        description: formData.description,
-        ...uploadedFiles,
-        pnrNumber: formData.pnrNumber,
-        ...PNRDetails,
+        ...completeComplaintData,
       }
-  
-      const response = await axios.post(
+
+      const res = await axios.post(
         "http://localhost:4001/api/complaint/create",
-        completeComplaintData,
+        apiComplaintData,
         {
           headers: {
             "Content-Type": "application/json",
@@ -110,7 +118,7 @@ const Form = () => {
         }
       );
   
-      const { complaintId } = response.data.complaint;
+      const { complaintId } = res.data.complaint;
       setComplaintId(complaintId);
       setIsModalOpen(true);
   
