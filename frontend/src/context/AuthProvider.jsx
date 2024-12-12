@@ -1,43 +1,39 @@
-import axios from "axios";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import Cookies from "js-cookie";
-export const AuthContext = createContext();
-export const AuthProvider = ({ children }) => {
-const [profile, setProfile] = useState();
-const [isAuthenticated, setIsAuthenticated] = useState(false);
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import axios from 'axios';
 
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [profile, setProfile] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check for authentication on app load
   useEffect(() => {
-    const fetchProfile = async () => {
+    const checkAuth = async () => {
       try {
-        const token = Cookies.get("token");
-        const parsedToken = token ? JSON.parse(token) : undefined;
-        if (parsedToken) {
-          const { data } = await axios.get(
-            "http://localhost:4001/api/users/my-profile",
-            {
-              withCredentials: true,
-              headers: { "Content-Type": "application/json" },
-            }
-          );
-          console.log(data);
-          setProfile(data);
-          setIsAuthenticated(true);
-        }
+        const { data } = await axios.get('http://localhost:4001/api/users/profile', { withCredentials: true });
+        setProfile(data.user);
+        setIsAuthenticated(true);
+        // Store profile data in localStorage for persistence
+        localStorage.setItem('profile', JSON.stringify(data.user));
       } catch (error) {
-        console.log(error);
+        console.log('Not authenticated');
+        setIsAuthenticated(false);
+        localStorage.removeItem('profile');
       }
     };
-    fetchProfile();
+
+    const storedProfile = localStorage.getItem('profile');
+    if (storedProfile) {
+      setProfile(JSON.parse(storedProfile));
+      setIsAuthenticated(true);
+    } else {
+      checkAuth();
+    }
   }, []);
+
   return (
-    <AuthContext.Provider
-      value={{
-        profile,
-        setProfile,
-        isAuthenticated,
-        setIsAuthenticated,
-      }}
-    >
+    <AuthContext.Provider value={{ profile, isAuthenticated, setIsAuthenticated, setProfile }}>
       {children}
     </AuthContext.Provider>
   );

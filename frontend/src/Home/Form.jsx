@@ -5,7 +5,7 @@ import "./Form.css";
 import { useAuth } from "../context/AuthProvider";
 
 const Form = () => {
-  const [audioRecording, setAudioRecording] = useState(false);
+  // const [audioRecording, setAudioRecording] = useState(false);
   const [complaintId, setComplaintId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -31,15 +31,15 @@ const Form = () => {
     setFiles({ ...files, [name]: e.target.files[0] });
   };
 
-  const handleAudioStart = () => {
-    setAudioRecording(true);
-    // Logic to start audio recording can be added here.
-  };
+  // const handleAudioStart = () => {
+  //   setAudioRecording(true);
+  //   // Logic to start audio recording can be added here.
+  // };
 
-  const handleAudioStop = () => {
-    setAudioRecording(false);
-    // Logic to stop audio recording can be added here.
-  };
+  // const handleAudioStop = () => {
+  //   setAudioRecording(false);
+  //   // Logic to stop audio recording can be added here.
+  // };
 
   const uploadToCloudinary = async (file, resourceType = "auto") => {
     const cloudName = "dehbw4s0x"; // Replace with your Cloudinary cloud name
@@ -70,11 +70,11 @@ const Form = () => {
   
     try {
       const complaintData = {
-        userId: profile?.user._id,
-        phoneNumber: formData.phoneNumber,
-        pnrNumber: formData.pnrNumber,
-        complaintType: formData.complaintType,
-        complaintSubType: formData.complaintSubType,
+        // userId: profile?.user._id,
+        // phoneNumber: formData.phoneNumber,
+        // pnrNumber: formData.pnrNumber,
+        // complaintType: formData.complaintType,
+        // complaintSubType: formData.complaintSubType,
         description: formData.description,
       };
   
@@ -132,8 +132,8 @@ const Form = () => {
           email: profile?.user.email, // User's email from profile
           complaintId,
           description: formData.description,
-          phoneNumber: formData.phoneNumber,
-          pnrNumber: formData.pnrNumber,
+          // phoneNumber: formData.phoneNumber,
+          // pnrNumber: formData.pnrNumber,
         }),
       });
   
@@ -146,10 +146,10 @@ const Form = () => {
 
   const handleReset = () => {
     setFormData({
-      phoneNumber: "",
-      pnrNumber: "",
-      complaintType: "",
-      complaintSubType: "",
+      // phoneNumber: "",
+      // pnrNumber: "",
+      // complaintType: "",
+      // complaintSubType: "",
       description: "",
     });
     setFiles({ image: null, video: null, audio: null });
@@ -161,11 +161,11 @@ const Form = () => {
     <div className="form-container">
       <form onSubmit={handleSubmit}>
         <h1>Grievance Detail</h1>
-        <p className="mandatory">* Mandatory Fields</p>
+        {/* <p className="mandatory">* Mandatory Fields</p> */}
 
         <div className="form-content">
           {/* Left Section */}
-          <div className="form-left">
+          {/* <div className="form-left">
             <div className="form-group">
               <label>
                 Enter Mobile
@@ -232,16 +232,16 @@ const Form = () => {
                 <option value="Subtype3">Subtype 3</option>
               </select>
             </div>
-          </div>
+          </div> */}
 
-          <div className="divider"></div>
+          {/* <div className="divider"></div> */}
 
           {/* Right Section */}
           <div className="form-right">
             <div className="form-group">
               <label>Audio</label>
               <div className="audio-controls">
-                <button
+                {/* <button
                   type="button"
                   onClick={handleAudioStart}
                   disabled={audioRecording}
@@ -256,7 +256,7 @@ const Form = () => {
                   className="btn"
                 >
                   Stop
-                </button>
+                </button> */}
                 <input
                   type="file"
                   accept="audio/*"

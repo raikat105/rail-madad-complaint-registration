@@ -240,9 +240,10 @@ function Register() {
             <div className="photo w-20 h-20 mr-4">
               <img
                 src={photoPreview || "placeholder.jpg"}
-                alt="Photo Preview"
+                alt={photoPreview ? "Preview" : "Placeholder"}
                 className="w-full h-full object-cover rounded-md"
               />
+
             </div>
             <input
               type="file"

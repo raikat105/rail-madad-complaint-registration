@@ -16,11 +16,11 @@ body {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  inline-size: 900px;
-  max-inline-size: 95%;
+  /* inline-size: 900px; */
+  max-inline-size: 50%;
   visibility: visible;
-  margin-block-start: 100px;
-  margin-inline-end: -10px;
+  /* margin-block-start: 100px; */
+  /* margin-inline-end: -10px; */
   position: absolute;
   inset-block-start: 50%;
   inset-inline-start: 50%;
@@ -30,7 +30,7 @@ body {
 
 form h1 {
   text-align: center;
-  margin-block-end: 10px;
+  /* margin-block-end: 10px; */
   color: #1E90FF;
   font-weight: 900;
   font-size: 1.5rem;
@@ -39,7 +39,7 @@ form h1 {
 .mandatory {
   color: red;
   text-align: end;
-  margin-block-end: 15px;
+  /* margin-block-end: 15px; */
 }
 
 .form-content {
@@ -48,19 +48,18 @@ form h1 {
   gap: 20px;
 }
 
-.form-left,
 .form-right {
   flex: 1;
 }
 
-.divider {
+/* .divider {
   inline-size: 2px;
   background-color: #ccc;
-}
+} */
 
-.form-group {
+/* .form-group {
   margin-block-end: 15px;
-}
+} */
 
 label {
   display: block;

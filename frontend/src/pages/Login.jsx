@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 
 function Login() {
-  const { isAuthenticated, setIsAuthenticated, setProfile } = useAuth();
+  const { setIsAuthenticated, setProfile } = useAuth();
 
   const navigateTo = useNavigate();
   const [email, setEmail] = useState("");
