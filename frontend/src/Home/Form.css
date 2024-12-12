@@ -178,3 +178,7 @@ textarea {
 		borderRadius: 5px;
 		fontSize: 18px;
 }
+
+.red-color{
+  color: red;
+}

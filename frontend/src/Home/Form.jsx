@@ -5,7 +5,7 @@ import "./Form.css";
 import { useAuth } from "../context/AuthProvider";
 
 const Form = () => {
-  // const [audioRecording, setAudioRecording] = useState(false);
+  const [audioRecording, setAudioRecording] = useState(false);
   const [complaintId, setComplaintId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -31,15 +31,15 @@ const Form = () => {
     setFiles({ ...files, [name]: e.target.files[0] });
   };
 
-  // const handleAudioStart = () => {
-  //   setAudioRecording(true);
-  //   // Logic to start audio recording can be added here.
-  // };
+  const handleAudioStart = () => {
+    setAudioRecording(true);
+    // Logic to start audio recording can be added here.
+  };
 
-  // const handleAudioStop = () => {
-  //   setAudioRecording(false);
-  //   // Logic to stop audio recording can be added here.
-  // };
+  const handleAudioStop = () => {
+    setAudioRecording(false);
+    // Logic to stop audio recording can be added here.
+  };
 
   const uploadToCloudinary = async (file, resourceType = "auto") => {
     const cloudName = "dehbw4s0x"; // Replace with your Cloudinary cloud name
@@ -90,7 +90,7 @@ const Form = () => {
       }
 
       const response = await axios.post(
-        "https://f7b8-34-125-96-82.ngrok-free.app/submit",
+        "https://2538-34-125-79-146.ngrok-free.app/submit",
         uploadedFiles,
         {
           headers: {
@@ -237,7 +237,26 @@ const Form = () => {
           {/* <div className="divider"></div> */}
 
           {/* Right Section */}
+          
           <div className="form-right">
+          <div className="form-group">
+              <label>PNR <span className="red-color">*</span></label>
+              <div className="image-controls">
+                <input
+                  type="file"
+                  accept="image/*"
+                  name="image"
+                  onChange={handleFileChange}
+                  className="upload-input"
+                  required
+                />
+                {/* <span></span> */}
+                {/* <button type="button" className="btn">
+                  Open Camera
+                </button> */}
+              </div>
+            </div>
+          
             <div className="form-group">
               <label>Audio</label>
               <div className="audio-controls">
@@ -286,9 +305,9 @@ const Form = () => {
                   onChange={handleFileChange}
                   className="upload-input"
                 />
-                <button type="button" className="btn">
+                {/* <button type="button" className="btn">
                   Open Camera
-                </button>
+                </button> */}
               </div>
             </div>
 
