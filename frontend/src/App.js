@@ -17,6 +17,8 @@ import Feedback from "./Home/Feedback";
 import HistoryTab from "./Home/HistoryTab";
 import PnrChecker from "./Home/PnrChecker";
 import AdminDashboard from "./Home/Admindashboard";
+import DeptComplaints from "./Home/DeptComplaints";
+import ConvaiWidget from "./Home/ConvaiWidget";
 
 function App() {
   const location = useLocation();
@@ -56,7 +58,9 @@ function App() {
         <Route path="/complaints" element={<><Body /> <Form /></>} />
         <Route path="/current-complaint-status" element={<><Body /><ComplaintStatusPage /></>} />
         <Route path="/complaint-history" element={<><Body /><HistoryTab /></>} />
+        <Route path="/dept-complaints" element={<><Body /><DeptComplaints /></>} />
         <Route path="/pnr" element={<><Body /><PnrChecker /></>} />
+        <Route path="/callbot" element={<><Body /><ConvaiWidget /></>} />
         {/* <Route path="*" element={<div>Page Not Found</div>} /> */}
 
       </Routes>

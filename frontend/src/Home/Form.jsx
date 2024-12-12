@@ -8,6 +8,7 @@ const Form = () => {
   const [audioRecording, setAudioRecording] = useState(false);
   const [complaintId, setComplaintId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [apires, setapires] = useState("");
   const [formData, setFormData] = useState({
     phoneNumber: "",
     pnrNumber: "",
@@ -90,7 +91,7 @@ const Form = () => {
       }
 
       const response = await axios.post(
-        "https://2538-34-125-79-146.ngrok-free.app/submit",
+        "https://40e8-35-229-87-170.ngrok-free.app/submit",
         uploadedFiles,
         {
           headers: {
@@ -99,6 +100,9 @@ const Form = () => {
           },
         }
       );
+
+      const res2 = response.data.classifier;
+      setapires("Your response is : " + res2);
 
       console.log(response.data.classifier)
   
@@ -239,24 +243,6 @@ const Form = () => {
           {/* Right Section */}
           
           <div className="form-right">
-          <div className="form-group">
-              <label>PNR <span className="red-color">*</span></label>
-              <div className="image-controls">
-                <input
-                  type="file"
-                  accept="image/*"
-                  name="image"
-                  onChange={handleFileChange}
-                  className="upload-input"
-                  required
-                />
-                {/* <span></span> */}
-                {/* <button type="button" className="btn">
-                  Open Camera
-                </button> */}
-              </div>
-            </div>
-          
             <div className="form-group">
               <label>Audio</label>
               <div className="audio-controls">
@@ -359,6 +345,7 @@ const Form = () => {
           <p style={{color: "#000000", marginBottom: "10px"}}>Your Complaint ID is:</p>
           <h1 style={{ color: "#4CAF50", marginBottom: "10px"}}>{complaintId}</h1>
           <p style={{color: "#000000", marginTop: "15px", fontWeight: '700'}}>Save this ID for future reference.</p>
+          <p style={{color: "#000000", marginTop: "15px", fontWeight: '700'}}>{apires}</p>
           <button
             onClick={() => {
               setIsModalOpen(false);

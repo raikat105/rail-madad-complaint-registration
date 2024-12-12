@@ -20,13 +20,7 @@ const AdminDashboard = () => {
               <Link to="/profile">Statistics at a glance:</Link>
             </li>
             <li>
-              <Link to="/complaint-history">Total Complaints</Link>
-            </li>
-            <li>
-              <Link to="/current-complaint-status">Pending Complaints</Link>
-            </li>
-            <li>
-              <Link to="/complaints">Resolved Complaints</Link>
+              <Link to="/dept-complaints">Total Complaints</Link>
             </li>
             <li>
               <Link to="/complaints">Average Resolution Time</Link>

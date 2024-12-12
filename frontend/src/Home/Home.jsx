@@ -227,18 +227,7 @@ const Home = () => {
 								onKeyDown={handleKeyDown}
 								placeholder="Type your message..."
 							/>
-							<button onClick={startRecording} title="Record Voice">
-								🎤
-							</button>
-							<label className="media-upload-label" htmlFor="media-upload">
-								📎
-							</label>
-							<input
-								id="media-upload"
-								type="file"
-								accept="image/*,video/*"
-								onChange={handleFileInput}
-							/>
+		
 							<button onClick={sendMessage}>Send</button>
 						</footer>
 					</div>

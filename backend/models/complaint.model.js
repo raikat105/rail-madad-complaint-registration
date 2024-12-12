@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const complaintSchema = new mongoose.Schema({
   userId: {
     type: String,
-    required: true,
+    required: false,
   },
   complaintId: {
     type: String,
@@ -48,7 +48,7 @@ const complaintSchema = new mongoose.Schema({
   },
   pnrNumber: {
     type: String,
-    required: true,
+    required: false,
     validate: {
       validator: function (v) {
         return /^\d{10}$/.test(v); 
@@ -59,7 +59,6 @@ const complaintSchema = new mongoose.Schema({
   department: {
     type: String,
     required: false,
-    enum: ['Safety', 'Operations', 'Cleaning'], 
   },
   createdAt: {
     type: Date,

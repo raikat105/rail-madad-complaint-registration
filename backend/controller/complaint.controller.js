@@ -113,8 +113,8 @@ export const deleteComplaint = async (req, res) => {
 // Get complaints by department
 export const getDeptComplaints = async (req, res) => {
   try {
-    const { dept } = req.params;
-    const complaints = await Complaint.find({ department: dept });
+    const { userid } = req.params;
+    const complaints = await Complaint.findById(userid);
     res.status(200).json({ complaints });
   } catch (error) {
     console.error("Error fetching department complaints:", error);
