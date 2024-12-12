@@ -1,12 +1,14 @@
 from flask import Flask, request, jsonify
 from paddleocr import PaddleOCR
 import os
+from flask_cors import CORS
 
 # Initialize PaddleOCR with automatic language detection
 ocr = PaddleOCR(use_angle_cls=True, lang='en')
 
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)
 
 # Create an endpoint for OCR
 @app.route('/process-image', methods=['POST'])
@@ -35,7 +37,18 @@ def process_image():
     os.remove(temp_path)
 
     # Return the recognized text as a JSON response
-    return jsonify({'text': full_text.strip()}), 200
+    full_text = full_text.strip()
+    var = full_text.split()
+    k = 0
+    print(var)
+    for i in range (len(var)):
+        if (var[i] == "PNR") :
+            for j in range (i + 1, len(var)) :
+                if (len(var[j]) == 10) :
+                    print(var[j])
+                    k = j
+                    break
+    return jsonify({'text': var[k]}), 200
 
 # Run the Flask app
 if __name__ == '__main__':

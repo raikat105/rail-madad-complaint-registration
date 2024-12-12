@@ -3,11 +3,16 @@ import fs from 'fs';
 
 async function sendImageToFlask(imagePath) {
   try {
-    const imageData = fs.readFileSync(imagePath); 
+    const imageData = fs.readFileSync(imagePath);
 
-    const response = await axios.post('http://127.0.0.1:5000/process_image', imageData, {
+    const blob = new Blob([imageData], { type: 'image/jpeg' });
+
+    const formData = new FormData();
+    formData.append('image', blob, { filename: 'image.jpg' });
+
+    const response = await axios.post('http://127.0.0.1:5000/process-image', formData, {
       headers: {
-        'Content-Type': 'image/jpeg', // Adjust based on your image type (e.g., 'image/png', 'image/gif')
+        'Content-Type': 'multipart/form-data',
       },
     });
 
@@ -27,5 +32,3 @@ async function sendImageToFlask(imagePath) {
 // Example usage:
 const imagePath = "C:\\Users\\RAIKAT\\OneDrive\\Documents\\rail-madad-complaint-registration\\backend\\ocr-test\\ticket.jpg"; 
 const ocrText = await sendImageToFlask(imagePath);
-
-console.log(ocrText);

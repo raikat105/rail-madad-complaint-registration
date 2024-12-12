@@ -90,7 +90,7 @@ const Form = () => {
       }
 
       const response = await axios.post(
-        "https://fb4b-34-125-185-46.ngrok-free.app/submit",
+        "https://2538-34-125-79-146.ngrok-free.app/submit",
         uploadedFiles,
         {
           headers: {
@@ -300,7 +300,6 @@ const Form = () => {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                required
                 className="textarea"
               ></textarea>
             </div>
