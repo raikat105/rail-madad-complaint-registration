@@ -12,7 +12,7 @@ const complaintSchema = new mongoose.Schema({
   },
   phoneNumber: {
     type: String,
-    required: true,
+    required: false,
     validate: {
       validator: function (v) {
         return /^\d{10}$/.test(v); // Ensures a 10-digit phone number
@@ -27,7 +27,7 @@ const complaintSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
+    required: false,
     trim: true,
   },
   media: {
@@ -40,11 +40,11 @@ const complaintSchema = new mongoose.Schema({
   },
   complaintType: {
     type: String,
-    required: true,
+    required: false,
   },
   complaintSubType: {
     type: String,
-    required: true,
+    required: false,
   },
   pnrNumber: {
     type: String,

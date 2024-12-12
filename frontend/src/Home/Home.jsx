@@ -11,68 +11,91 @@ import retire from "../Assets/retire.png";
 import "./Home.css";
 import React, { useState, useEffect } from "react";
 import chatbot from "../Assets/chatbot.png";
+//import clipIcon from "../Assets/clip.png";
 import "./Chat.css";
 
-
-
 const Home = () => {
-    const [isChatVisible, setIsChatVisible] = useState(false);
-    const [messages, setMessages] = useState([]);
-    const [input, setInput] = useState("");
-    const [chatHistory, setChatHistory] = useState("");
+	const [isChatVisible, setIsChatVisible] = useState(false);
+	const [messages, setMessages] = useState([]);
+	const [input, setInput] = useState("");
+	const [chatHistory, setChatHistory] = useState("");
+	const [file, setFile] = useState(null);
 
-    useEffect(() => {
-        if (isChatVisible && messages.length === 0) {
-            const welcomeMessage = "Welcome to Rail Madad! How may I assist you today?";
-            setMessages([{ type: "received", text: welcomeMessage }]);
-            setChatHistory((prev) => prev + `Chatbot: ${welcomeMessage}\n`);
-        }
-    }, [isChatVisible, messages]);
+	useEffect(() => {
+		if (isChatVisible && messages.length === 0) {
+			const welcomeMessage =
+				"Welcome to Rail Madad! How may I assist you today?";
+			setMessages([{ type: "received", text: welcomeMessage }]);
+			setChatHistory((prev) => prev + `Chatbot: ${welcomeMessage}\n`);
+		}
+	}, [isChatVisible, messages]);
 
-    const toggleChat = () => {
-        setIsChatVisible(!isChatVisible);
-    };
+	const toggleChat = () => {
+		setIsChatVisible(!isChatVisible);
+	};
 
-    const sendMessage = async () => {
-        if (!input.trim()) return;
+	const sendMessage = async () => {
+		if (!input.trim() && !file) return;
 
-        const payload = {
-            text: input.trim(),
-            chatHistory,
-        };
+		const payload = {
+			text: input.trim(),
+			file,
+			chatHistory,
+		};
 
-        const userMessage = { type: "sent", text: input };
-        setMessages((prev) => [...prev, userMessage]);
-        setChatHistory((prev) => prev + `User: ${input}\n`);
-        setInput("");
+		const userMessage = { type: "sent", text: input || "[File Sent]" };
+		setMessages((prev) => [...prev, userMessage]);
+		setChatHistory((prev) => prev + `User: ${input || "[File Sent]"}\n`);
+		setInput("");
+		setFile(null);
 
-        try {
-            const url = "http://localhost:4001/chat";
-            const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
+		try {
+			const url = "http://localhost:4001/chat";
+			const response = await fetch(url, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(payload),
+			});
 
-            const data = await response.json();
-            const botReply = data.text;
+			const data = await response.json();
+			const botReply = data.text;
 
-            setMessages((prev) => [...prev, { type: "received", text: botReply }]);
-            setChatHistory((prev) => prev + `Chatbot: ${botReply}\n`);
-        } catch (error) {
-            const errorMessage = "Error: Unable to connect to the server.";
-            setMessages((prev) => [...prev, { type: "received", text: errorMessage }]);
-            setChatHistory((prev) => prev + `Chatbot: ${errorMessage}\n`);
-        }
-    };
+			setMessages((prev) => [...prev, { type: "received", text: botReply }]);
+			setChatHistory((prev) => prev + `Chatbot: ${botReply}\n`);
+		} catch (error) {
+			const errorMessage = "Error: Unable to connect to the server.";
+			setMessages((prev) => [
+				...prev,
+				{ type: "received", text: errorMessage },
+			]);
+			setChatHistory((prev) => prev + `Chatbot: ${errorMessage}\n`);
+		}
+	};
 
-    const handleKeyDown = (event) => {
-        if (event.key === "Enter") sendMessage();
-    };
-    return (
-        <>
-            {/* Icons with dropdowns */}
-            <div className="image-container overlay-image5">
+	const handleKeyDown = (event) => {
+		if (event.key === "Enter") sendMessage();
+	};
+
+	const handleFileInput = (event) => {
+		const file = event.target.files[0];
+		if (file) {
+			setFile(file);
+			setMessages((prev) => [
+				...prev,
+				{ type: "sent", text: `File Uploaded: ${file.name}` },
+			]);
+		}
+	};
+
+	const startRecording = () => {
+		// Placeholder for voice recording functionality
+		alert("Voice recording started (functionality to be implemented).");
+	};
+
+	return (
+		<>
+			{/* Icons with dropdowns */}
+			<div className="image-container overlay-image5">
                 <ul className="nav-item">
                     <img src={ticketbooking} alt="Ticket Booking" />
                     <div className="image-text">
@@ -171,57 +194,58 @@ const Home = () => {
                     </div></ul>
             </div>
 
-            {/* <div className="image-container overlay-image9">
-                <ul className="nav-item">
-                    <img src={chatbot} alt="Chatbot" />
-                    <p className="white">ChatBot</p>
-                    <div className="dropdown-box1">
-                        <ul class="bulleted-text">
-                            <li>Get AI assistance !</li>
-                        </ul>
-                    </div></ul>
-            </div> */}
+			<div className="app10">
+				{!isChatVisible && (
+					<div className="chat-icon" onClick={toggleChat}>
+						<img src={chatbot} alt="Chat Icon" />
+						<p className="white">Ask RailMate</p>
+					</div>
+				)}
 
-            <div className="app10">
-                {!isChatVisible && (
-                    <div className="chat-icon" onClick={toggleChat}>
-                        <img src={chatbot} alt="Chat Icon" />
-                        <p className="white">Ask RailMate</p>
-                    </div>
-                )}
-
-                {isChatVisible && (
-                    <div className="chat-window">
-                        <header className="chat-header">
-                            <h1>RailMadad</h1>
-                            <button className="minimize-btn" onClick={toggleChat}>
-                                –
-                            </button>
-                        </header>
-                        <div className="chat-messages">
-                            {messages.map((msg, index) => (
-                                <div key={index} className={`message ${msg.type}`}>
-                                    {msg.text && typeof msg.text === "string" && <p>{msg.text}</p>}
-                                </div>
-                            ))}
-                        </div>
-                        <footer className="chat-footer">
-                            <input
-                                type="text"
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                placeholder="Type your message..."
-                            />
-                            <button onClick={sendMessage}>Send</button>
-                        </footer>
-                    </div>
-                )}
-            </div>
-
-        </>
-
-    );
+				{isChatVisible && (
+					<div className="chat-window">
+						<header className="chat-header">
+							<h1>RailMadad</h1>
+							<button className="minimize-btn" onClick={toggleChat}>
+								–
+							</button>
+						</header>
+						<div className="chat-messages">
+							{messages.map((msg, index) => (
+								<div key={index} className={`message ${msg.type}`}>
+									{msg.text && typeof msg.text === "string" && (
+										<p>{msg.text}</p>
+									)}
+								</div>
+							))}
+						</div>
+						<footer className="chat-footer">
+							<input
+								type="text"
+								value={input}
+								onChange={(e) => setInput(e.target.value)}
+								onKeyDown={handleKeyDown}
+								placeholder="Type your message..."
+							/>
+							<button onClick={startRecording} title="Record Voice">
+								🎤
+							</button>
+							<label className="media-upload-label" htmlFor="media-upload">
+								📎
+							</label>
+							<input
+								id="media-upload"
+								type="file"
+								accept="image/*,video/*"
+								onChange={handleFileInput}
+							/>
+							<button onClick={sendMessage}>Send</button>
+						</footer>
+					</div>
+				)}
+			</div>
+		</>
+	);
 };
 
 export default Home;
