@@ -16,6 +16,7 @@ import ComplaintStatusPage from "./Home/ComplaintStatusPage";
 import Feedback from "./Home/Feedback";
 import HistoryTab from "./Home/HistoryTab";
 import PnrChecker from "./Home/PnrChecker";
+import AdminDashboard from "./Home/Admindashboard";
 
 function App() {
   const location = useLocation();
@@ -49,13 +50,14 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<><Body /> <Dashboard /></>} />
+        <Route path="/admin-dashboard" element={<><Body /> <AdminDashboard /></>} />
         <Route path="/contact" element={<><Body /> <Contact /></>} />
         <Route path="/feed" element={<><Feedback /> <Body /></>} />
         <Route path="/complaints" element={<><Body /> <Form /></>} />
         <Route path="/current-complaint-status" element={<><Body /><ComplaintStatusPage /></>} />
         <Route path="/complaint-history" element={<><Body /><HistoryTab /></>} />
         <Route path="/pnr" element={<><Body /><PnrChecker /></>} />
-        <Route path="*" element={<div>Page Not Found</div>} />
+        {/* <Route path="*" element={<div>Page Not Found</div>} /> */}
 
       </Routes>
       <Toaster />
